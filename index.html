@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>스마트스토어 데일리 매출</title>
+<title>데일리 매출 기입</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
-/* Layout: one narrow work column — drop zone, two channel cards side by side, then the order lines that make up each number */
+/* Layout: one work column — a shared drop zone, then one section per channel (results first, "how to get the file" guide underneath) */
 :root {
   --bg: #f5f6f4;
   --surface: #ffffff;
@@ -20,9 +20,12 @@
   --accent-soft: #e2f1ec;
   --npay: #2f5fd0;
   --npay-soft: #e6ecfb;
+  --cp: #c2410c;
+  --cp-soft: #fbeadf;
   --warn: #a4570b;
   --warn-soft: #fbefdf;
   --danger: #b3261e;
+  --on-accent: #ffffff;
   --sans: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
 }
@@ -30,74 +33,114 @@
   :root:not([data-theme="light"]) {
     --bg: #121614; --surface: #1a201d; --ink: #e7ece9; --muted: #98a39d; --line: #2c3430;
     --accent: #4cc39d; --accent-soft: #173229; --npay: #8aa8f5; --npay-soft: #1c2640;
-    --warn: #e9a95c; --warn-soft: #33260f; --danger: #f2877f; color-scheme: dark;
+    --cp: #f29a62; --cp-soft: #3a2214;
+    --warn: #e9a95c; --warn-soft: #33260f; --danger: #f2877f; --on-accent: #0d1311; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #121614; --surface: #1a201d; --ink: #e7ece9; --muted: #98a39d; --line: #2c3430;
   --accent: #4cc39d; --accent-soft: #173229; --npay: #8aa8f5; --npay-soft: #1c2640;
-  --warn: #e9a95c; --warn-soft: #33260f; --danger: #f2877f; color-scheme: dark;
+  --cp: #f29a62; --cp-soft: #3a2214;
+  --warn: #e9a95c; --warn-soft: #33260f; --danger: #f2877f; --on-accent: #0d1311; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.55; }
-.wrap { max-width: 920px; margin: 0 auto; padding-block: 28px 60px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 22px; }
-header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.wrap { max-width: 960px; margin: 0 auto; padding-block: 28px 60px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 22px; }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 16px; }
 h1 { font-size: 1.45rem; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
 .sub { color: var(--muted); font-size: 0.88rem; margin: 2px 0 0; }
-.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
-.chip.sample { background: var(--warn-soft); color: var(--warn); }
+nav.jump { display: flex; gap: 6px; flex-wrap: wrap; }
+nav.jump a { font-size: 0.85rem; font-weight: 600; color: var(--ink); text-decoration: none; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+nav.jump a:hover { border-color: var(--accent); }
 
 .drop { border: 1.5px dashed var(--line); border-radius: 12px; background: var(--surface); padding: 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; transition: border-color .15s, background .15s; }
 .drop.over { border-color: var(--accent); background: var(--accent-soft); }
-.drop p { margin: 0; flex: 1 1 260px; min-width: 0; }
+.drop p { margin: 0; flex: 1 1 300px; min-width: 0; }
 .drop strong { display: block; }
-.drop small { color: var(--muted); }
+.drop small { color: var(--muted); display: block; }
 .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 label.pw { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-input[type=password], input[type=text] { width: 84px; font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
-.btn { font: inherit; font-weight: 600; border: 0; border-radius: 8px; padding: 9px 16px; background: var(--accent); color: #fff; cursor: pointer; }
-:root:not([data-theme="light"]) .btn { color: var(--bg); }
-@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .btn { color: #fff; } }
-:root[data-theme="light"] .btn { color: #fff; }
-.btn:focus-visible, .copy:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type=password], input[type=text] { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+#pw { width: 84px; }
+.btn { font: inherit; font-weight: 600; border: 0; border-radius: 8px; padding: 9px 16px; background: var(--accent); color: var(--on-accent); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px; font-size: 0.82rem; }
+.btn:focus-visible, .copy:focus-visible, summary:focus-visible, input:focus-visible, nav.jump a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 #file { display: none; }
+.log { display: grid; gap: 6px; }
+.log:empty { display: none; }
+.log div { font-size: 0.86rem; padding: 8px 12px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); }
+.log div.err { color: var(--danger); }
+.log div.ok { background: var(--accent-soft); color: var(--accent); }
 
-.status { font-size: 0.88rem; padding: 10px 14px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); }
-.status.err { color: var(--danger); }
+section.ch { display: grid; gap: 14px; scroll-margin-top: 16px; }
+.ch-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
+.ch-head h2 { margin: 0; font-size: 1.15rem; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.chip.idle { background: var(--line); color: var(--muted); }
 
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; display: grid; gap: 14px; min-width: 0; }
-.card h2 { margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
-.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.card h3 { margin: 0; font-size: 0.98rem; display: flex; align-items: center; gap: 8px; }
+.step { font-family: var(--mono); font-size: 0.72rem; font-weight: 600; color: var(--cp); background: var(--cp-soft); border-radius: 4px; padding: 1px 6px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
 .card.n .dot { background: var(--npay); }
 .metric { display: grid; gap: 2px; }
-.metric .lbl { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.02em; }
+.lbl { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.02em; }
 .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.big { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 1.9rem; font-weight: 600; letter-spacing: -0.02em; min-width: 0; overflow-wrap: anywhere; }
-.mid { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 1.35rem; font-weight: 600; }
+.big { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 1.8rem; font-weight: 600; letter-spacing: -0.02em; min-width: 0; overflow-wrap: anywhere; }
+.mid { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 1.3rem; font-weight: 600; }
 .unit { font-family: var(--sans); font-size: 0.9rem; font-weight: 500; color: var(--muted); margin-left: 3px; }
+.empty .big, .empty .mid { color: var(--muted); }
 .break { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .copy { font: inherit; font-size: 0.8rem; font-weight: 600; padding: 5px 11px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; white-space: nowrap; }
+.copy:disabled { opacity: .45; cursor: default; }
 .copy.done { border-color: var(--accent); color: var(--accent); }
-.where { font-size: 0.75rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
-.is-sample .big, .is-sample .mid { color: var(--muted); }
+.copy.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.where { font-size: 0.75rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 9px; }
+.files { display: grid; gap: 4px; font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.files div { display: flex; justify-content: space-between; gap: 8px; }
+.files span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.inputs { display: grid; gap: 8px; }
+.inputs label { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+.inputs input { width: 100%; font-family: var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
 
 .total { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.88rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .total b { color: var(--ink); font-family: var(--mono); }
 
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 12px; min-width: 0; }
+.panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.panel-head h3 { margin: 0; font-size: 0.98rem; display: flex; align-items: center; gap: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 0.8rem; }
+.seg label { padding: 4px 10px; cursor: pointer; color: var(--muted); }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg input:checked + span { color: var(--ink); font-weight: 600; }
+.seg label:has(input:checked) { background: var(--bg); }
+.seg label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+
 details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-summary { cursor: pointer; padding: 14px 18px; font-weight: 600; }
-.tbl { overflow-x: auto; padding: 0 18px 16px; }
-table { border-collapse: collapse; width: 100%; font-size: 0.84rem; min-width: 640px; }
-th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-size: 0.75rem; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; }
+summary { cursor: pointer; padding: 13px 18px; font-weight: 600; }
+.tbl { overflow-x: auto; }
+details .tbl { padding: 0 18px 16px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.83rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.74rem; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); white-space: nowrap; }
+tfoot td { font-weight: 600; border-bottom: 0; }
+#rows table, #rawTbl { min-width: 640px; }
+#rawTbl td:nth-child(-n+2) { white-space: nowrap; }
 tr.excl td { color: var(--muted); text-decoration: line-through; }
 tr.excl td.st { text-decoration: none; color: var(--danger); }
 .tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
 .tag.n { background: var(--npay-soft); color: var(--npay); }
-.rules { padding: 0 18px 16px; color: var(--muted); font-size: 0.86rem; }
-.rules ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.hint { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+.guide { padding: 0 18px 18px; display: grid; gap: 16px; font-size: 0.88rem; }
+.guide h4 { margin: 0 0 6px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+.path { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 0 6px; }
+.path span { background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 1px 7px; font-size: 0.8rem; white-space: nowrap; }
+.path i { font-style: normal; color: var(--muted); font-size: 0.8rem; }
+.guide ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; color: var(--muted); }
+.guide ul b { color: var(--ink); font-weight: 600; }
 .privacy { font-size: 0.78rem; color: var(--muted); text-align: center; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -106,74 +149,165 @@ tr.excl td.st { text-decoration: none; color: var(--danger); }
 <div class="wrap">
   <header>
     <div>
-      <h1>스마트스토어 데일리 매출</h1>
-      <p class="sub">발주(주문)확인/발송관리 엑셀을 올리면 시트에 적을 값만 뽑아줍니다.</p>
+      <h1>데일리 매출 기입</h1>
+      <p class="sub">전날 자료를 올리면 시트에 적을 값만 뽑아줍니다. 스마트스토어 · 쿠팡</p>
     </div>
-    <span id="dateChip" class="chip sample">예시 데이터</span>
+    <nav class="jump"><a href="#smartstore">스마트스토어</a><a href="#coupang">쿠팡</a></nav>
   </header>
 
   <div id="drop" class="drop">
-    <p><strong>엑셀 파일을 여기로 끌어다 놓기</strong><small>스마트스토어_전체주문발주발송관리_YYYYMMDD_HHMM.xlsx</small></p>
+    <p><strong>파일을 전부 여기로 끌어다 놓기</strong>
+      <small>여러 개를 한 번에 올려도 됩니다. 파일 종류는 알아서 구분해요.</small>
+      <small>스마트스토어 발주발송관리 .xlsx · 쿠팡 발주SKU리스트 .csv(일반·R) · 쿠팡 광고보고서 .xlsx(일반)</small></p>
     <div class="controls">
-      <label class="pw" for="pw">비밀번호 <input id="pw" type="password" value="1234" autocomplete="off"></label>
+      <label class="pw" for="pw">스마트스토어 비밀번호 <input id="pw" type="password" value="1234" autocomplete="off"></label>
       <button id="pick" class="btn" type="button">파일 선택</button>
-      <input id="file" type="file" accept=".xlsx,.xls">
+      <input id="file" type="file" accept=".xlsx,.xls,.csv" multiple>
     </div>
   </div>
+  <div id="log" class="log" aria-live="polite"></div>
 
-  <div id="status" class="status" hidden></div>
-
-  <section id="cards" class="cards is-sample" aria-live="polite">
-    <article class="card" id="cardG">
-      <h2><span class="dot"></span>스마트스토어 (일반배송)</h2>
-      <div class="metric">
-        <span class="lbl">매출액</span>
-        <div class="row"><span class="big" data-k="sales">0<span class="unit">원</span></span><button class="copy" type="button" data-copy="sales">복사</button></div>
-        <span class="break" data-k="break">주문금액 0 + 배송비 0</span>
+  <!-- ================= 스마트스토어 ================= -->
+  <section class="ch" id="smartstore">
+    <div class="ch-head"><h2>스마트스토어</h2><span id="ssChip" class="chip idle">파일 대기 중</span></div>
+    <div id="ssCards" class="cards empty">
+      <article class="card" id="cardG">
+        <h3><span class="dot"></span>스마트스토어 (일반배송)</h3>
+        <div class="metric"><span class="lbl">매출액</span>
+          <div class="row"><span class="big" data-k="sales">—</span><button class="copy" type="button" data-copy="sales" disabled>복사</button></div>
+          <span class="break" data-k="break">최종 상품별 총 주문금액 + 배송비 합계</span></div>
+        <div class="metric"><span class="lbl">수량</span>
+          <div class="row"><span class="mid" data-k="qty">—</span><button class="copy" type="button" data-copy="qty" disabled>복사</button></div>
+          <span class="break" data-k="lines">수량 열 합계</span></div>
+        <div class="where">매출 → 데일리 퍼포먼스 ‘스마트스토어’ · 수량 → 마켓 애널리틱스 채널 일별 분석 ‘스마트스토어’</div>
+      </article>
+      <article class="card n" id="cardN">
+        <h3><span class="dot"></span>스마트스토어 N배송</h3>
+        <div class="metric"><span class="lbl">매출액</span>
+          <div class="row"><span class="big" data-k="sales">—</span><button class="copy" type="button" data-copy="sales" disabled>복사</button></div>
+          <span class="break" data-k="break">최종 상품별 총 주문금액 + 배송비 합계</span></div>
+        <div class="metric"><span class="lbl">수량</span>
+          <div class="row"><span class="mid" data-k="qty">—</span><button class="copy" type="button" data-copy="qty" disabled>복사</button></div>
+          <span class="break" data-k="lines">수량 열 합계</span></div>
+        <div class="where">매출 → 데일리 퍼포먼스 ‘스마트스토어 N배송’ · 수량 → 마켓 애널리틱스 채널 일별 분석 ‘스마트스토어 N배송’</div>
+      </article>
+    </div>
+    <div id="ssTotal" class="total"></div>
+    <details id="ssDetail" hidden>
+      <summary>주문 상세 보기 <span id="ssCount" class="sub"></span></summary>
+      <div class="tbl" id="rows"><table>
+        <thead><tr><th>배송속성</th><th>상품명</th><th>옵션정보</th><th class="num">수량</th><th class="num">주문금액</th><th class="num">배송비</th><th>주문상태</th></tr></thead>
+        <tbody id="ssRows"></tbody>
+      </table></div>
+    </details>
+    <details>
+      <summary>어디서 받고 어디에 적나요</summary>
+      <div class="guide">
+        <div>
+          <h4>파일 받기</h4>
+          <div class="path"><span>스마트스토어센터</span><i>›</i><span>판매관리</span><i>›</i><span>발주(주문)확인/발송관리</span><i>›</i><span>결제일 · 전날 하루로 설정</span><i>›</i><span>엑셀 다운</span></div>
+          <ul><li>파일 비밀번호는 <b>1234</b>. 잠긴 파일 그대로 올리면 됩니다.</li></ul>
+        </div>
+        <div>
+          <h4>계산 기준</h4>
+          <ul>
+            <li>주문상태 <b>결제취소 · 입금대기</b> 건은 제외</li>
+            <li>배송속성 <b>일반배송 / N배송</b>을 나눠서 각각 기재</li>
+            <li>매출액 = <b>최종 상품별 총 주문금액 + 배송비 합계</b></li>
+            <li>수량 = <b>수량</b> 열 합계</li>
+          </ul>
+        </div>
+        <div>
+          <h4>적는 곳</h4>
+          <ul>
+            <li>매출 → <b>[Key Metrics] Daily Performance</b> 데일리 매출 시트, ‘스마트스토어’ / ‘스마트스토어 N배송’</li>
+            <li>수량 → <b>[SALES] Market Analytics</b> 채널 일별 분석 시트, ‘스마트스토어’ / ‘스마트스토어 N배송’</li>
+          </ul>
+        </div>
       </div>
-      <div class="metric">
-        <span class="lbl">수량</span>
-        <div class="row"><span class="mid" data-k="qty">0<span class="unit">개</span></span><button class="copy" type="button" data-copy="qty">복사</button></div>
-        <span class="break" data-k="lines">상품주문 0건</span>
-      </div>
-      <div class="where">매출 → 데일리 매출 시트 · 수량 → 채널 일별 분석 ‘스마트스토어’ 행</div>
-    </article>
-    <article class="card n" id="cardN">
-      <h2><span class="dot"></span>스마트스토어 N배송</h2>
-      <div class="metric">
-        <span class="lbl">매출액</span>
-        <div class="row"><span class="big" data-k="sales">0<span class="unit">원</span></span><button class="copy" type="button" data-copy="sales">복사</button></div>
-        <span class="break" data-k="break">주문금액 0 + 배송비 0</span>
-      </div>
-      <div class="metric">
-        <span class="lbl">수량</span>
-        <div class="row"><span class="mid" data-k="qty">0<span class="unit">개</span></span><button class="copy" type="button" data-copy="qty">복사</button></div>
-        <span class="break" data-k="lines">상품주문 0건</span>
-      </div>
-      <div class="where">매출 → 데일리 매출 시트 · 수량 → 채널 일별 분석 ‘스마트스토어 N배송’ 행</div>
-    </article>
+    </details>
   </section>
 
-  <div id="total" class="total"></div>
+  <!-- ================= 쿠팡 ================= -->
+  <section class="ch" id="coupang">
+    <div class="ch-head"><h2>쿠팡 로켓배송</h2><span id="cpChip" class="chip idle">일반 + R계정</span></div>
+    <div class="cards">
+      <article class="card" id="cardPO">
+        <h3><span class="step">2번</span>발주수량 (발주기준)</h3>
+        <div class="metric"><span class="lbl">일반 + R계정 발주수량 합계</span>
+          <div class="row"><span class="big" id="poTotal">—</span><button class="copy" type="button" id="poCopy" disabled>복사</button></div>
+          <div id="poFiles" class="files"><div><span>발주SKU리스트 .csv 2개(일반·R)를 올려주세요</span></div></div></div>
+        <div class="row"><span class="where" style="border:0;padding:0">→ 마켓 애널리틱스 ‘쿠팡로켓배송(발주기준)’</span><button class="btn ghost" type="button" id="poReset" hidden>비우기</button></div>
+      </article>
+      <article class="card" id="cardIN">
+        <h3><span class="step">3번</span>입고 금액 (입고기준)</h3>
+        <div class="inputs">
+          <label for="inG">일반계정 <input id="inG" type="text" inputmode="numeric" placeholder="총 단가 합계" autocomplete="off"></label>
+          <label for="inR">R계정 <input id="inR" type="text" inputmode="numeric" placeholder="총 단가 합계" autocomplete="off"></label>
+        </div>
+        <div class="metric"><span class="lbl">합계</span>
+          <div class="row"><span class="big" id="inTotal">—</span><button class="copy" type="button" id="inCopy" disabled>복사</button></div></div>
+        <div class="where">→ 데일리 퍼포먼스 해당 연/월 시트 ‘쿠팡로켓배송(입고기준)’</div>
+      </article>
+    </div>
 
-  <details id="detail">
-    <summary>주문 상세 보기 <span id="detailCount" class="sub"></span></summary>
-    <div class="tbl"><table>
-      <thead><tr><th>배송속성</th><th>상품명</th><th>옵션정보</th><th class="num">수량</th><th class="num">주문금액</th><th class="num">배송비</th><th>주문상태</th></tr></thead>
-      <tbody id="rows"></tbody>
-    </table></div>
-  </details>
+    <div class="panel" id="rawPanel">
+      <div class="panel-head">
+        <h3><span class="step">5번</span>CPC 리포트 RAW 붙여넣기 <span class="sub" id="rawMeta">일반계정만</span></h3>
+        <div class="controls">
+          <div class="seg" role="radiogroup" aria-label="날짜 형식">
+            <label><input type="radio" name="df" value="raw" checked><span>20261124</span></label>
+            <label><input type="radio" name="df" value="dash"><span>2026-11-24</span></label>
+          </div>
+          <button class="copy primary" type="button" id="rawCopy" disabled>RAW용 전체 복사</button>
+        </div>
+      </div>
+      <p class="hint" id="rawHint">일반계정 매출성장광고보고서(.xlsx)를 올리면 RAW 시트 열 순서대로 정리됩니다. 제목줄 없이 복사되니 RAW 맨 아래 빈 칸(날짜 열)을 누르고 붙여넣으세요.</p>
+      <div class="tbl"><table id="rawTbl">
+        <thead><tr><th>날짜</th><th>캠페인명</th><th>광고 노출 지면</th><th class="num">노출수</th><th class="num">클릭수</th><th class="num">광고비</th><th class="num">직접 판매수량(1일)</th><th class="num">직접 전환매출액(1일)</th></tr></thead>
+        <tbody id="rawRows"></tbody>
+        <tfoot id="rawFoot"></tfoot>
+      </table></div>
+    </div>
 
-  <details>
-    <summary>집계 기준</summary>
-    <div class="rules"><ul>
-      <li>주문상태가 <b>결제취소</b>, <b>입금대기</b>인 건은 빼고 계산합니다.</li>
-      <li>배송속성이 N배송이면 ‘스마트스토어 N배송’, 그 외(일반배송 등)는 ‘스마트스토어’로 나눕니다.</li>
-      <li>매출액 = 최종 상품별 총 주문금액 + 배송비 합계</li>
-      <li>수량 = 수량 열 합계</li>
-      <li>복사 버튼은 쉼표 없는 숫자만 복사하므로 시트 칸에 그대로 붙여넣으면 됩니다.</li>
-    </ul></div>
-  </details>
+    <details>
+      <summary>어디서 받고 어디에 적나요</summary>
+      <div class="guide">
+        <div>
+          <h4><span class="step">2번</span>발주수량 · 일반계정, R계정 둘 다</h4>
+          <div class="path"><span>쿠팡 서플라이어 허브</span><i>›</i><span>물류</span><i>›</i><span>발주SKU리스트</span><i>›</i><span>전일로 설정 후 검색</span><i>›</i><span>엑셀 다운로드</span></div>
+          <ul>
+            <li>두 계정 파일을 같이 올리면 <b>발주수량</b> 열을 합산합니다.</li>
+            <li>적는 곳: <b>[SALES] Market Analytics</b> ‘쿠팡로켓배송(발주기준)’, 전일 날짜 칸 (오늘이 10/28이면 10/27)</li>
+          </ul>
+        </div>
+        <div>
+          <h4><span class="step">3번</span>입고 금액 · 일반계정, R계정 둘 다</h4>
+          <div class="path"><span>쿠팡 서플라이어 허브</span><i>›</i><span>물류</span><i>›</i><span>입고 상세내역</span><i>›</i><span>전일로 설정 후 검색</span><i>›</i><span>총 단가 합계 확인</span></div>
+          <ul>
+            <li>계정별 <b>총 단가 합계</b>를 위 칸에 넣으면 더해줍니다.</li>
+            <li>적는 곳: <b>[Key Metrics] Daily Performance</b> 해당 연/월 시트 ‘쿠팡로켓배송(입고기준)’</li>
+          </ul>
+        </div>
+        <div>
+          <h4><span class="step">4번</span>광고 매출 · 일반계정만</h4>
+          <div class="path"><span>광고관리 (쿠팡 애즈 센터로 이동)</span><i>›</i><span>광고관리</span><i>›</i><span>매출성장</span><i>›</i><span>전일자 설정</span></div>
+          <ul>
+            <li>화면의 <b>전체매출 → 매출</b>, <b>전체판매수 → 전체판매수</b></li>
+            <li>적는 곳: <b>[SALES] 쿠팡 CPC REPORT</b> DAY 시트, 날짜 맞춰서</li>
+          </ul>
+        </div>
+        <div>
+          <h4><span class="step">5번</span>광고보고서 · 일반계정만</h4>
+          <div class="path"><span>광고관리 (쿠팡 애즈 센터)</span><i>›</i><span>광고보고서</span><i>›</i><span>매출성장광고보고서</span><i>›</i><span>기간: 전일 · 기간구분: 일별 · 캠페인: 모두선택 · 구조: 캠페인 › 광고그룹</span><i>›</i><span>보고서 만들기 › 다운로드</span></div>
+          <ul>
+            <li>올리면 <b>날짜 / 캠페인명 / 광고 노출 지면 / 노출수 / 클릭수 / 광고비 / 직접 판매수량(1일) / 직접 전환매출액(1일)</b>만 뽑습니다.</li>
+            <li>적는 곳: <b>[SALES] 쿠팡 CPC REPORT</b> RAW 시트 맨 아래에 붙여넣기</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+  </section>
 
   <p class="privacy">파일은 이 브라우저 안에서만 열리고 어디에도 전송되지 않습니다.</p>
 </div>
@@ -182,9 +316,10 @@ tr.excl td.st { text-decoration: none; color: var(--danger); }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha512/0.8.0/sha512.min.js"></script>
 <script>
 (() => {
-  const EXCLUDE = ['결제취소', '입금대기'];
   const $ = (s, r = document) => r.querySelector(s);
   const fmt = n => Math.round(n).toLocaleString('ko-KR');
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const num = v => (typeof v === 'number' ? v : +String(v ?? '').replace(/[^0-9.-]/g, '') || 0);
 
   // ---------- ECMA-376 agile decryption (password-protected xlsx) ----------
   const cat = (...a) => { const o = new Uint8Array(a.reduce((s, x) => s + x.length, 0)); let p = 0; for (const x of a) { o.set(x, p); p += x.length; } return o; };
@@ -192,80 +327,70 @@ tr.excl td.st { text-decoration: none; color: var(--danger); }
   const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
   const utf16 = s => { const b = new Uint8Array(s.length * 2); for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); b[2*i] = c & 255; b[2*i+1] = c >> 8; } return b; };
   const fit = (h, n, padByte) => { if (h.length >= n) return h.slice(0, n); const o = new Uint8Array(n).fill(padByte); o.set(h); return o; };
-
   function hasher(alg) {
-    const a = alg.toUpperCase().replace('-', '');
-    if (a === 'SHA512') return d => new Uint8Array(sha512.arrayBuffer(d));
+    if (alg.toUpperCase().replace('-', '') === 'SHA512') return d => new Uint8Array(sha512.arrayBuffer(d));
     throw new Error('지원하지 않는 암호화 방식입니다 (' + alg + ').');
   }
-
   async function aesCbcNoPad(key, iv, data) {
-    // WebCrypto only decrypts PKCS#7-padded data, so append one block that decrypts to valid padding.
     const last = data.slice(data.length - 16);
     const extra = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-CBC', iv: last }, key, new Uint8Array(16).fill(16))).slice(0, 16);
     return new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-CBC', iv }, key, cat(data, extra)));
   }
   const aesKey = raw => crypto.subtle.importKey('raw', raw, 'AES-CBC', false, ['encrypt', 'decrypt']);
-
   async function decryptAgile(cfb, password) {
     const infoE = XLSX.CFB.find(cfb, 'EncryptionInfo'), pkgE = XLSX.CFB.find(cfb, 'EncryptedPackage');
-    if (!infoE || !pkgE) throw new Error('암호화된 엑셀 구조를 찾지 못했습니다.');
     const info = new Uint8Array(infoE.content), pkg = new Uint8Array(pkgE.content);
-    const ver = new DataView(info.buffer, info.byteOffset).getUint16(0, true);
-    if (ver !== 4) throw new Error('이 암호화 형식은 지원하지 않습니다. 엑셀에서 비밀번호를 풀고 저장한 파일을 올려주세요.');
+    if (new DataView(info.buffer, info.byteOffset).getUint16(0, true) !== 4) throw new Error('이 암호화 형식은 지원하지 않습니다. 엑셀에서 비밀번호를 풀고 저장한 파일을 올려주세요.');
     const xml = new DOMParser().parseFromString(new TextDecoder().decode(info.slice(8)), 'application/xml');
-    const kd = xml.getElementsByTagNameNS('*', 'keyData')[0];
-    const ek = xml.getElementsByTagNameNS('*', 'encryptedKey')[0];
+    const kd = xml.getElementsByTagNameNS('*', 'keyData')[0], ek = xml.getElementsByTagNameNS('*', 'encryptedKey')[0];
     const H = hasher(ek.getAttribute('hashAlgorithm'));
-    const spin = +ek.getAttribute('spinCount');
     let h = H(cat(b64(ek.getAttribute('saltValue')), utf16(password)));
-    for (let i = 0; i < spin; i++) h = H(cat(u32(i), h));
-    const kb = +ek.getAttribute('keyBits') / 8;
-    const pwKey = await aesKey(fit(H(cat(h, new Uint8Array([0x14,0x6e,0x0b,0xe7,0xab,0xac,0xd0,0xd6]))), kb, 0x36));
+    for (let i = 0, n = +ek.getAttribute('spinCount'); i < n; i++) h = H(cat(u32(i), h));
+    const pwKey = await aesKey(fit(H(cat(h, new Uint8Array([0x14,0x6e,0x0b,0xe7,0xab,0xac,0xd0,0xd6]))), +ek.getAttribute('keyBits') / 8, 0x36));
     const secret = (await aesCbcNoPad(pwKey, b64(ek.getAttribute('saltValue')), b64(ek.getAttribute('encryptedKeyValue')))).slice(0, +kd.getAttribute('keyBits') / 8);
-    const key = await aesKey(secret);
-    const Hk = hasher(kd.getAttribute('hashAlgorithm'));
+    const key = await aesKey(secret), Hk = hasher(kd.getAttribute('hashAlgorithm'));
     const kdSalt = b64(kd.getAttribute('saltValue')), bs = +kd.getAttribute('blockSize');
     const dv = new DataView(pkg.buffer, pkg.byteOffset);
     const size = dv.getUint32(0, true) + dv.getUint32(4, true) * 4294967296;
     const parts = [];
-    for (let off = 8, i = 0; off < pkg.length; off += 4096, i++) {
-      const seg = pkg.slice(off, Math.min(off + 4096, pkg.length));
-      parts.push(await aesCbcNoPad(key, Hk(cat(kdSalt, u32(i))).slice(0, bs), seg));
-    }
+    for (let off = 8, i = 0; off < pkg.length; off += 4096, i++) parts.push(await aesCbcNoPad(key, Hk(cat(kdSalt, u32(i))).slice(0, bs), pkg.slice(off, Math.min(off + 4096, pkg.length))));
     const out = cat(...parts).slice(0, size);
     if (out[0] !== 0x50 || out[1] !== 0x4b) throw new Error('비밀번호가 맞지 않습니다.');
     return out;
   }
 
-  async function openWorkbook(buf, password) {
+  async function readRows(buf, name) {
     const u8 = new Uint8Array(buf);
-    const isCfb = u8[0] === 0xd0 && u8[1] === 0xcf && u8[2] === 0x11 && u8[3] === 0xe0;
-    let data = u8;
-    if (isCfb) {
-      const cfb = XLSX.CFB.read(u8, { type: 'array' });
-      if (XLSX.CFB.find(cfb, 'EncryptedPackage')) data = await decryptAgile(cfb, password);
+    let wb;
+    if (/\.csv$/i.test(name)) {
+      let text;
+      try { text = new TextDecoder('utf-8', { fatal: true }).decode(u8); } catch { text = new TextDecoder('euc-kr').decode(u8); }
+      wb = XLSX.read(text.replace(/^﻿/, ''), { type: 'string', raw: true });
+    } else {
+      let data = u8;
+      if (u8[0] === 0xd0 && u8[1] === 0xcf && u8[2] === 0x11 && u8[3] === 0xe0) {
+        const cfb = XLSX.CFB.read(u8, { type: 'array' });
+        if (XLSX.CFB.find(cfb, 'EncryptedPackage')) data = await decryptAgile(cfb, $('#pw').value || '1234');
+      }
+      wb = XLSX.read(data, { type: 'array', cellDates: true });
     }
-    return XLSX.read(data, { type: 'array', cellDates: true });
+    return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: null });
   }
+  const findHeader = (rows, must) => rows.slice(0, 10).findIndex(r => r && must.every(m => r.map(x => (x == null ? '' : String(x).trim())).includes(m)));
+  const headOf = r => r.map(x => (x == null ? '' : String(x).trim()));
 
-  // ---------- aggregation ----------
-  function aggregate(wb) {
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null });
-    const hi = rows.findIndex(r => r && r.includes('주문상태') && r.includes('배송속성'));
-    if (hi < 0) throw new Error('‘주문상태’, ‘배송속성’ 열이 있는 표를 찾지 못했습니다. 발주(주문)확인/발송관리 엑셀이 맞는지 확인해 주세요.');
-    const head = rows[hi].map(x => (x == null ? '' : String(x).trim()));
+  // ---------- 스마트스토어 ----------
+  const EXCLUDE = ['결제취소', '입금대기'];
+  function aggSmartstore(rows, hi) {
+    const head = headOf(rows[hi]);
     const need = ['배송속성', '상품명', '옵션정보', '수량', '최종 상품별 총 주문금액', '배송비 합계', '주문상태'];
     const miss = need.filter(n => !head.includes(n));
     if (miss.length) throw new Error('필요한 열이 없습니다: ' + miss.join(', '));
     const c = n => head.indexOf(n);
-    const num = v => (typeof v === 'number' ? v : +String(v ?? '').replace(/[^0-9.-]/g, '') || 0);
     const out = { G: { amt: 0, ship: 0, qty: 0, n: 0 }, N: { amt: 0, ship: 0, qty: 0, n: 0 }, lines: [], dates: new Set(), excluded: 0, others: new Set() };
     for (const r of rows.slice(hi + 1)) {
       if (!r || r.every(v => v == null || v === '')) continue;
-      const attr = String(r[c('배송속성')] ?? '').trim();
-      const st = String(r[c('주문상태')] ?? '').trim();
+      const attr = String(r[c('배송속성')] ?? '').trim(), st = String(r[c('주문상태')] ?? '').trim();
       const line = { attr, name: r[c('상품명')] ?? '', opt: r[c('옵션정보')] ?? '', qty: num(r[c('수량')]), amt: num(r[c('최종 상품별 총 주문금액')]), ship: num(r[c('배송비 합계')]), st };
       line.key = /N배송/.test(attr) ? 'N' : 'G';
       if (line.key === 'G' && attr && attr !== '일반배송') out.others.add(attr);
@@ -279,82 +404,175 @@ tr.excl td.st { text-decoration: none; color: var(--danger); }
     }
     return out;
   }
-
-  // ---------- render ----------
-  function fill(card, t) {
+  function fillCard(card, t) {
     const sales = t.amt + t.ship;
     card.querySelector('[data-k=sales]').innerHTML = fmt(sales) + '<span class="unit">원</span>';
     card.querySelector('[data-k=qty]').innerHTML = fmt(t.qty) + '<span class="unit">개</span>';
     card.querySelector('[data-k=break]').textContent = '주문금액 ' + fmt(t.amt) + ' + 배송비 ' + fmt(t.ship);
     card.querySelector('[data-k=lines]').textContent = '상품주문 ' + t.n + '건';
-    card.querySelector('[data-copy=sales]').dataset.val = String(Math.round(sales));
-    card.querySelector('[data-copy=qty]').dataset.val = String(Math.round(t.qty));
+    const cs = card.querySelector('[data-copy=sales]'), cq = card.querySelector('[data-copy=qty]');
+    cs.dataset.val = String(Math.round(sales)); cq.dataset.val = String(Math.round(t.qty)); cs.disabled = cq.disabled = false;
   }
-  const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
-
-  function render(res, sample) {
-    $('#cards').classList.toggle('is-sample', !!sample);
-    fill($('#cardG'), res.G); fill($('#cardN'), res.N);
-    const chip = $('#dateChip');
+  function renderSmartstore(res) {
+    $('#ssCards').classList.remove('empty');
+    fillCard($('#cardG'), res.G); fillCard($('#cardN'), res.N);
     const dates = [...res.dates].sort();
-    chip.className = 'chip' + (sample ? ' sample' : '');
-    chip.textContent = sample ? '예시 데이터' : ('결제일 ' + (dates.length ? (dates.length === 1 ? dates[0] : dates[0] + ' ~ ' + dates[dates.length - 1]) : '-'));
-    const tot = res.G.amt + res.G.ship + res.N.amt + res.N.ship;
-    $('#total').innerHTML = '<span>합계 매출 <b>' + fmt(tot) + '</b>원</span><span>합계 수량 <b>' + fmt(res.G.qty + res.N.qty) + '</b>개</span><span>제외된 건 <b>' + res.excluded + '</b>건 (결제취소·입금대기)</span>';
-    const order = l => (l.key === 'G' ? 0 : 1);
-    const lines = [...res.lines].sort((a, b) => order(a) - order(b) || (a.excl - b.excl));
-    $('#rows').innerHTML = lines.map(l => '<tr class="' + (l.excl ? 'excl' : '') + '"><td><span class="tag' + (l.key === 'N' ? ' n' : '') + '">' + esc(l.attr || '일반배송') + '</span></td><td>' + esc(l.name) + '</td><td>' + esc(l.opt) + '</td><td class="num">' + fmt(l.qty) + '</td><td class="num">' + fmt(l.amt) + '</td><td class="num">' + fmt(l.ship) + '</td><td class="st">' + esc(l.st) + '</td></tr>').join('');
-    $('#detailCount').textContent = '· ' + res.lines.length + '줄';
+    const chip = $('#ssChip'); chip.className = 'chip';
+    chip.textContent = '결제일 ' + (dates.length ? (dates.length === 1 ? dates[0] : dates[0] + ' ~ ' + dates[dates.length - 1]) : '-');
+    $('#ssTotal').innerHTML = '<span>합계 매출 <b>' + fmt(res.G.amt + res.G.ship + res.N.amt + res.N.ship) + '</b>원</span><span>합계 수량 <b>' + fmt(res.G.qty + res.N.qty) + '</b>개</span><span>제외된 건 <b>' + res.excluded + '</b>건 (결제취소·입금대기)</span>';
+    const lines = [...res.lines].sort((a, b) => (a.key === 'G' ? 0 : 1) - (b.key === 'G' ? 0 : 1) || (a.excl - b.excl));
+    $('#ssRows').innerHTML = lines.map(l => '<tr class="' + (l.excl ? 'excl' : '') + '"><td><span class="tag' + (l.key === 'N' ? ' n' : '') + '">' + esc(l.attr || '일반배송') + '</span></td><td>' + esc(l.name) + '</td><td>' + esc(l.opt) + '</td><td class="num">' + fmt(l.qty) + '</td><td class="num">' + fmt(l.amt) + '</td><td class="num">' + fmt(l.ship) + '</td><td class="st">' + esc(l.st) + '</td></tr>').join('');
+    $('#ssCount').textContent = '· ' + res.lines.length + '줄';
+    $('#ssDetail').hidden = false;
     const warns = [];
-    if (!sample && dates.length > 1) warns.push('결제일이 ' + dates.length + '일에 걸쳐 있습니다 (' + dates.join(', ') + '). 날짜 설정을 전날 하루로 했는지 확인해 주세요.');
-    if (res.others.size) warns.push('처음 보는 배송속성이 있어 일반배송 쪽에 넣었습니다: ' + [...res.others].join(', '));
-    showStatus(warns.join(' '), false);
+    if (dates.length > 1) warns.push('스마트스토어: 결제일이 ' + dates.length + '일에 걸쳐 있습니다 (' + dates.join(', ') + '). 날짜를 전날 하루로 설정했는지 확인해 주세요.');
+    if (res.others.size) warns.push('스마트스토어: 처음 보는 배송속성은 일반배송에 넣었습니다: ' + [...res.others].join(', '));
+    return warns;
   }
 
-  function showStatus(msg, isErr) {
-    const s = $('#status'); s.hidden = !msg; s.textContent = msg || ''; s.classList.toggle('err', !!isErr);
-  }
-
-  async function processBuffer(buf, name) {
-    showStatus('파일 여는 중…', false);
-    try {
-      const wb = await openWorkbook(buf, $('#pw').value || '1234');
-      const res = aggregate(wb);
-      render(res, false);
-      document.title = '스마트스토어 데일리 매출';
-      return { G: res.G, N: res.N, excluded: res.excluded, dates: [...res.dates] };
-    } catch (e) {
-      showStatus((name ? name + ': ' : '') + (e && e.message ? e.message : '파일을 읽지 못했습니다.'), true);
-      throw e;
+  // ---------- 쿠팡 발주SKU리스트 ----------
+  const poFiles = new Map();
+  function aggPO(rows, hi) {
+    const head = headOf(rows[hi]);
+    const qi = head.indexOf('발주수량'), ti = head.indexOf('발주유형'), di = head.indexOf('발주일');
+    let qty = 0, n = 0; const types = {}, dates = new Set();
+    for (const r of rows.slice(hi + 1)) {
+      if (!r || r.every(v => v == null || v === '')) continue;
+      qty += num(r[qi]); n++;
+      if (ti >= 0) { const t = String(r[ti] ?? '').trim(); types[t] = (types[t] || 0) + 1; }
+      if (di >= 0 && r[di]) dates.add(r[di] instanceof Date ? r[di].toISOString().slice(0, 10) : String(r[di]).slice(0, 10));
     }
+    return { qty, n, types, dates: [...dates].sort() };
   }
-  window.processBuffer = processBuffer;
+  function renderPO() {
+    const list = [...poFiles.entries()];
+    const total = list.reduce((s, [, v]) => s + v.qty, 0);
+    $('#poTotal').innerHTML = list.length ? fmt(total) + '<span class="unit">개</span>' : '—';
+    $('#cardPO').classList.toggle('empty', !list.length);
+    const b = $('#poCopy'); b.disabled = !list.length; b.dataset.val = String(Math.round(total));
+    $('#poReset').hidden = !list.length;
+    $('#poFiles').innerHTML = list.length
+      ? list.map(([name, v], i) => '<div><span title="' + esc(name) + '">파일 ' + (i + 1) + ' · ' + esc(name) + '</span><span>' + fmt(v.qty) + '개 · ' + v.n + '줄</span></div>').join('')
+        + (list.length === 1 ? '<div><span>계정 파일이 1개뿐입니다. 일반·R 둘 다 올렸는지 확인해 주세요.</span></div>' : '')
+      : '<div><span>발주SKU리스트 .csv 2개(일반·R)를 올려주세요</span></div>';
+    const warns = [];
+    const dates = new Set(list.flatMap(([, v]) => v.dates));
+    if (dates.size > 1) warns.push('쿠팡 발주: 발주일이 여러 날짜입니다 (' + [...dates].join(', ') + '). 전일로 검색했는지 확인해 주세요.');
+    const odd = list.flatMap(([, v]) => Object.keys(v.types).filter(t => t && t !== '일반'));
+    if (odd.length) warns.push('쿠팡 발주: 발주유형이 ‘일반’이 아닌 건이 있습니다 (' + [...new Set(odd)].join(', ') + '). 합계에는 포함했어요.');
+    if (list.length > 2) warns.push('쿠팡 발주: 파일이 ' + list.length + '개 들어가 있습니다. 같은 계정 파일이 두 번 들어갔다면 ‘비우기’ 후 다시 올려주세요.');
+    return warns;
+  }
+  $('#poReset').addEventListener('click', () => { poFiles.clear(); renderPO(); });
 
-  async function handleFile(f) { if (f) processBuffer(await f.arrayBuffer(), f.name).catch(() => {}); }
+  // ---------- 쿠팡 입고금액 ----------
+  function renderIN() {
+    const g = $('#inG').value.trim(), r = $('#inR').value.trim();
+    const any = g !== '' || r !== '';
+    const total = num(g) + num(r);
+    $('#inTotal').innerHTML = any ? fmt(total) + '<span class="unit">원</span>' : '—';
+    $('#cardIN').classList.toggle('empty', !any);
+    const b = $('#inCopy'); b.disabled = !any; b.dataset.val = String(Math.round(total));
+  }
+  ['#inG', '#inR'].forEach(id => $(id).addEventListener('input', e => {
+    const raw = e.target.value.replace(/[^0-9]/g, '');
+    e.target.value = raw ? (+raw).toLocaleString('ko-KR') : '';
+    renderIN();
+  }));
+
+  // ---------- 쿠팡 광고보고서 → RAW ----------
+  const RAW_COLS = ['날짜', '캠페인명', '광고 노출 지면', '노출수', '클릭수', '광고비', '직접 판매수량(1일)', '직접 전환매출액(1일)'];
+  let rawData = null;
+  function aggRaw(rows, hi, name) {
+    const head = headOf(rows[hi]);
+    const miss = RAW_COLS.filter(c => !head.includes(c));
+    if (miss.length) throw new Error('광고보고서에 필요한 열이 없습니다: ' + miss.join(', '));
+    const ix = RAW_COLS.map(c => head.indexOf(c));
+    const data = rows.slice(hi + 1).filter(r => r && r[ix[0]] != null && String(r[ix[0]]).trim() !== '').map(r => ix.map(i => r[i]));
+    return { name, data };
+  }
+  const dateFmt = () => document.querySelector('input[name=df]:checked').value;
+  function fmtDate(v) {
+    let s = v instanceof Date ? v.getFullYear() + String(v.getMonth() + 1).padStart(2, '0') + String(v.getDate()).padStart(2, '0') : String(typeof v === 'number' ? Math.round(v) : v).trim();
+    const m = s.replace(/[^0-9]/g, '').match(/^(\d{4})(\d{2})(\d{2})$/);
+    if (!m) return s;
+    return dateFmt() === 'dash' ? m[1] + '-' + m[2] + '-' + m[3] : m[1] + m[2] + m[3];
+  }
+  const cell = v => (typeof v === 'number' ? String(Math.round(v * 100) / 100) : String(v ?? '').replace(/[\t\r\n]+/g, ' ').trim());
+  function rawLines() { return rawData ? rawData.data.map(r => [fmtDate(r[0]), ...r.slice(1).map(cell)]) : []; }
+  function renderRaw() {
+    const lines = rawLines();
+    $('#rawCopy').disabled = !lines.length;
+    if (!rawData) { $('#rawRows').innerHTML = '<tr><td colspan="8" class="hint">아직 올린 광고보고서가 없습니다.</td></tr>'; $('#rawFoot').innerHTML = ''; return []; }
+    $('#rawMeta').textContent = '· ' + lines.length + '행 · ' + rawData.name;
+    $('#rawRows').innerHTML = lines.map(l => '<tr>' + l.map((v, i) => i >= 3 ? '<td class="num">' + fmt(num(v)) + '</td>' : '<td>' + esc(v) + '</td>').join('') + '</tr>').join('');
+    const sums = [3, 4, 5, 6, 7].map(i => rawData.data.reduce((s, r) => s + num(r[i]), 0));
+    $('#rawFoot').innerHTML = '<tr><td colspan="3">합계 (복사에는 안 들어감)</td>' + sums.map(s => '<td class="num">' + fmt(s) + '</td>').join('') + '</tr>';
+    const warns = [];
+    const ds = new Set(lines.map(l => l[0]));
+    if (ds.size > 1) warns.push('광고보고서: 날짜가 여러 개입니다 (' + [...ds].join(', ') + '). 보고서 기간을 전일로 했는지 확인해 주세요.');
+    return warns;
+  }
+  document.querySelectorAll('input[name=df]').forEach(r => r.addEventListener('change', renderRaw));
+  $('#rawCopy').addEventListener('click', e => copyText(e.currentTarget, rawLines().map(l => l.join('\t')).join('\n'), 'RAW용 전체 복사'));
+
+  // ---------- routing ----------
+  function logMsgs(items) {
+    const box = $('#log');
+    box.innerHTML = items.map(([cls, m]) => '<div class="' + cls + '">' + esc(m) + '</div>').join('');
+  }
+  async function processFile(buf, name) {
+    const rows = await readRows(buf, name);
+    let hi;
+    if ((hi = findHeader(rows, ['주문상태', '배송속성'])) >= 0) return { kind: 'ss', warns: renderSmartstore(aggSmartstore(rows, hi)) };
+    if ((hi = findHeader(rows, ['광고 노출 지면', '광고비'])) >= 0) {
+      const replaced = !!rawData; rawData = aggRaw(rows, hi, name);
+      const w = renderRaw(); if (replaced) w.unshift('광고보고서는 마지막에 올린 파일 하나만 씁니다 (일반계정만): ' + name);
+      return { kind: 'raw', warns: w };
+    }
+    if ((hi = findHeader(rows, ['발주수량'])) >= 0) { poFiles.set(name, aggPO(rows, hi)); return { kind: 'po', warns: renderPO() }; }
+    throw new Error('어떤 파일인지 알아보지 못했습니다. 스마트스토어 발주발송관리, 쿠팡 발주SKU리스트, 쿠팡 광고보고서 중 하나인지 확인해 주세요.');
+  }
+  const KIND = { ss: '스마트스토어', po: '쿠팡 발주수량', raw: '쿠팡 광고보고서' };
+  async function handleFiles(files) {
+    const msgs = [];
+    for (const f of files) {
+      try {
+        const r = await processFile(await f.arrayBuffer(), f.name);
+        msgs.push(['ok', KIND[r.kind] + ' 반영: ' + f.name]);
+        r.warns.forEach(w => msgs.push(['', w]));
+      } catch (e) { msgs.push(['err', f.name + ': ' + (e && e.message ? e.message : '파일을 읽지 못했습니다.')]); }
+    }
+    logMsgs(msgs);
+  }
+  window.processFile = processFile;
+  window.testState = () => ({ po: [...poFiles.values()].reduce((s, v) => s + v.qty, 0), raw: rawLines().map(l => l.join('\t')).join('\n') });
+
   $('#pick').addEventListener('click', () => $('#file').click());
-  $('#file').addEventListener('change', e => { handleFile(e.target.files[0]); e.target.value = ''; });
+  $('#file').addEventListener('change', e => { handleFiles([...e.target.files]); e.target.value = ''; });
   const drop = $('#drop');
   ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
   ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
-  drop.addEventListener('drop', e => handleFile(e.dataTransfer.files[0]));
   document.addEventListener('dragover', e => e.preventDefault());
-  document.addEventListener('drop', e => { e.preventDefault(); if (!drop.contains(e.target)) handleFile(e.dataTransfer.files[0]); });
+  document.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); handleFiles([...e.dataTransfer.files]); });
 
-  document.addEventListener('click', async e => {
-    const b = e.target.closest('.copy'); if (!b || !b.dataset.val) return;
-    try { await navigator.clipboard.writeText(b.dataset.val); b.textContent = '복사됨'; }
-    catch { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = '선택됨 · Ctrl+C'; }
-    b.classList.add('done'); setTimeout(() => { b.textContent = '복사'; b.classList.remove('done'); }, 1600);
+  // ---------- copy ----------
+  async function copyText(btn, text, label) {
+    try { await navigator.clipboard.writeText(text); btn.textContent = '복사됨'; }
+    catch {
+      const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand('copy'); } catch {}
+      ta.remove(); btn.textContent = ok ? '복사됨' : '복사 실패';
+    }
+    btn.classList.add('done'); setTimeout(() => { btn.textContent = label; btn.classList.remove('done'); }, 1600);
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.copy'); if (!b || b.id === 'rawCopy' || !b.dataset.val) return;
+    copyText(b, b.dataset.val, '복사');
   });
 
-  // Example state until a file is loaded (clearly marked as 예시).
-  render({
-    G: { amt: 1000000, ship: 30000, qty: 30, n: 30 }, N: { amt: 500000, ship: 15000, qty: 10, n: 10 },
-    lines: [
-      { key: 'G', attr: '일반배송', name: '(예시) 7cm 키높이 퍼안감 로퍼', opt: '사이즈: 240 / 색상: 카멜', qty: 1, amt: 55900, ship: 0, st: '발송대기' },
-      { key: 'N', attr: 'N배송', name: '(예시) 플랫폼 로퍼', opt: '사이즈: 230 / 색상: 블랙', qty: 1, amt: 39900, ship: 3000, st: '배송중' }
-    ], dates: new Set(), excluded: 0, others: new Set()
-  }, true);
+  renderPO(); renderIN(); renderRaw();
 })();
 </script>
 
