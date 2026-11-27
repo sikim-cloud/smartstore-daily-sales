@@ -146,6 +146,10 @@ tr.excl td.st { text-decoration: none; color: var(--danger); }
 .tabs button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); }
 .tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pane { display: grid; gap: 22px; min-width: 0; }
+.subtabs { display: flex; gap: 0; border-bottom: 2px solid var(--line); }
+.subtabs button { font: inherit; font-weight: 600; font-size: 0.95rem; border: 0; background: transparent; color: var(--muted); padding: 8px 18px; margin-bottom: -2px; border-bottom: 2px solid transparent; cursor: pointer; }
+.subtabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.subtabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .pane[hidden] { display: none; }
 .wdrop { display: grid; gap: 10px; align-items: start; }
 .wdrop-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
@@ -194,7 +198,7 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
   <header>
     <div>
       <h1>매출 기입</h1>
-      <p class="sub">자료를 올리면 시트에 적을 값만 뽑아줍니다. 데일리(스마트스토어 · 쿠팡) · 주간(스마트스토어)</p>
+      <p class="sub">자료를 올리면 시트에 적을 값만 뽑아줍니다. 데일리(스마트스토어 · 쿠팡) · 주간(스마트스토어 · 쿠팡)</p>
     </div>
     <div class="tabs" role="tablist" aria-label="업무 구분">
       <button type="button" role="tab" id="tab-daily" aria-controls="pane-daily" aria-selected="true">데일리</button>
@@ -361,6 +365,28 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
 
   <!-- ================= 주간 ================= -->
   <div id="pane-weekly" class="pane" role="tabpanel" aria-labelledby="tab-weekly" hidden>
+    <div class="subtabs" role="tablist" aria-label="주간 채널">
+      <button type="button" role="tab" id="sub-ss" aria-controls="wk-ss" aria-selected="true">스마트스토어</button>
+      <button type="button" role="tab" id="sub-cp" aria-controls="wk-cp" aria-selected="false">쿠팡 로켓배송</button>
+    </div>
+
+    <div id="wk-cp" class="pane" role="tabpanel" aria-labelledby="sub-cp" hidden>
+      <div class="panel">
+        <div class="panel-head"><h3><span class="step">준비 중</span>쿠팡 주간 KPI · 납품율 엑셀</h3></div>
+        <p class="hint">11/16~22(202647주) 자료로 엑셀 값과 똑같이 나오는지 맞춘 뒤 이 탭을 채웁니다. 완성되면 파일별로 ‘어디서 받기 → 올리기 → 엑셀 어느 시트 몇 열 몇 행에 붙이기 → 구글시트 어느 칸에 적기’가 순서대로 나옵니다.</p>
+        <ol class="need">
+          <li class="todo"><span class="st">받을 예정</span><div><b>입고상세내역</b> 일반 · R<small>매출(납품) · 판매량 · 원가총액, Week 상위 20</small></div></li>
+          <li class="todo"><span class="st">받을 예정</span><div><b>발주sku리스트</b> 일반 · R, 2달치<small>2.쿠팡발주서 시트</small></div></li>
+          <li class="todo"><span class="st">받을 예정</span><div><b>애널리틱스 기본 물류 지표</b> 일반 · R<small>쿠팡재고 · 쿠팡 수불내역 시트</small></div></li>
+          <li class="todo"><span class="st">받을 예정</span><div><b>광고보고서</b> 상품 단위, 일반계정<small>CPC 인입SKU 이익 · 키즈 KPI</small></div></li>
+          <li class="todo"><span class="st">받을 예정</span><div><b>셀메이트 재고</b> 착구 · 리토<small>2.재고현황 시트</small></div></li>
+          <li class="todo"><span class="st">받을 예정</span><div><b>vi 파일 · B2B 쿠팡 ITEM MAP</b><small>VIID → SKUID, 원가 · 공급가</small></div></li>
+          <li class="todo"><span class="st">받을 예정</span><div><b>프로모션비용 · 리뷰/슬롯 · 물류전사 %</b><small>광고비 · 배송비</small></div></li>
+        </ol>
+      </div>
+    </div>
+
+    <div id="wk-ss" class="pane" role="tabpanel" aria-labelledby="sub-ss">
     <nav class="jump"><a href="#w-margin">채널별 주간 이익율</a><a href="#w-kpi">주간 KPI</a><a href="#w-target">신상 타겟 매출</a><a href="#w-guide">받는 법 · 적는 곳</a></nav>
 
     <div id="wdrop" class="drop wdrop">
@@ -550,6 +576,7 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
         </div>
       </div>
     </details>
+    </div><!-- /wk-ss -->
   </div><!-- /pane-weekly -->
 
   <p class="privacy">파일은 이 브라우저 안에서만 열리고 어디에도 전송되지 않습니다.</p>
@@ -854,6 +881,16 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
   let start = location.hash === '#weekly' ? 'weekly' : location.hash === '#daily' ? 'daily' : null;
   if (!start) { try { start = localStorage.getItem('tab'); } catch {} }
   showTab(start === 'weekly' ? 'weekly' : 'daily');
+  // 주간 안의 채널 탭 (스마트스토어 / 쿠팡)
+  const subs = { ss: [$('#sub-ss'), $('#wk-ss')], cp: [$('#sub-cp'), $('#wk-cp')] };
+  function showSub(k) {
+    for (const [key, [b, p]] of Object.entries(subs)) { const on = key === k; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; p.hidden = !on; }
+    try { localStorage.setItem('wsub', k); } catch {}
+  }
+  for (const [k, [b]] of Object.entries(subs)) b.addEventListener('click', () => showSub(k));
+  $('.subtabs').addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const k = $('#sub-ss').getAttribute('aria-selected') === 'true' ? 'cp' : 'ss'; showSub(k); subs[k][0].focus(); } });
+  let sub0 = null; try { sub0 = localStorage.getItem('wsub'); } catch {}
+  showSub(sub0 === 'cp' ? 'cp' : 'ss');
 
   // ---------- 저장 (IndexedDB, 실패하면 메모리만) ----------
   const mem = {};
@@ -1275,7 +1312,7 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
   const wd = $('#wdrop');
   ['dragenter', 'dragover'].forEach(t => wd.addEventListener(t, e => { e.preventDefault(); wd.classList.add('over'); }));
   ['dragleave', 'drop'].forEach(t => wd.addEventListener(t, e => { e.preventDefault(); wd.classList.remove('over'); }));
-  document.addEventListener('drop', e => { e.preventDefault(); wd.classList.remove('over'); if (!$('#pane-weekly').hidden) handleWeekly([...e.dataTransfer.files]); });
+  document.addEventListener('drop', e => { e.preventDefault(); wd.classList.remove('over'); if (!$('#pane-weekly').hidden && !$('#wk-ss').hidden) handleWeekly([...e.dataTransfer.files]); });
 
   (async () => { ref.im = (await dbGet('im')) || null; ref.fw = (await dbGet('fw')) || null; ref.inv = (await dbGet('inv')) || null; ref.alias = (await dbGet('alias')) || null; renderRefs(); compute(); })();
 })();
