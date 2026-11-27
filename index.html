@@ -406,9 +406,9 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
           <article class="card"><h3><span class="step">광고</span>Deliver_REPORT 광고비용</h3>
             <div class="inputs">
               <label for="cpPromo">프로모션 <input id="cpPromo" type="text" inputmode="numeric" placeholder="일반 + R 합계" autocomplete="off"></label>
-              <label for="cpReview">리뷰/슬롯 <input id="cpReview" type="text" inputmode="numeric" placeholder="없으면 비우기" autocomplete="off"></label>
+              <label for="cpReview">SSV (리뷰/슬롯) <input id="cpReview" type="text" inputmode="numeric" placeholder="없으면 비우기" autocomplete="off"></label>
             </div>
-            <span class="break">프로모션: 서플라이허브 › 정산 › 공제금액계정 › 쿠폰 프로모션 › 지난주 · 펀딩 금액 합계 (일반 + R계정 더해서). 리뷰/슬롯: 그 주 리뷰·슬롯 작업 비용. 쿠팡 CPC(광고보고서 광고비 합계)는 자동.</span></article>
+            <span class="break">광고비 = SSV + 쿠팡 CPC + 프로모션비. 프로모션: 서플라이허브 › 정산 › 공제금액계정 › 쿠폰 프로모션 › 지난주 · 펀딩 금액 합계 (일반 + R계정 더해서). SSV: 그 주 리뷰·슬롯 작업 비용. 쿠팡 CPC(광고보고서 광고비 합계)는 자동.</span></article>
           <article class="card"><h3><span class="step">CPC</span>[SALES] 쿠팡 CPC REPORT › DAY</h3>
             <div class="inputs">
               <label for="cpGmv">매출 (VAT제외) <input id="cpGmv" type="text" placeholder="지난주 7칸 붙여넣기 또는 합계" autocomplete="off"></label>
@@ -417,11 +417,11 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
             <span class="break" id="cpDayNote">DAY 시트에서 지난주 월~일 7칸을 복사해 붙이면 합계를 냅니다. 매출 → Deliver_REPORT 매출액 · 광고비 → 이익율 시트 · 주간 KPI 광고비.</span></article>
           <article class="card"><h3><span class="step">설정</span>물류전사 % · 시트 행 번호</h3>
             <div class="inputs">
-              <label for="cpShip">물류전사 % <input id="cpShip" type="text" inputmode="decimal" value="7" autocomplete="off"></label>
+              <label for="cpShip">물류전사 % <input id="cpShip" type="text" inputmode="decimal" placeholder="예: 7" autocomplete="off"></label>
               <label for="cpRow">이익율 행 <input id="cpRow" type="text" inputmode="numeric" placeholder="예: 2985" autocomplete="off"></label>
               <label for="cpKidsAd">키즈 광고비 <input id="cpKidsAd" type="text" inputmode="numeric" placeholder="키즈 주간이익 광고비" autocomplete="off"></label>
             </div>
-            <span class="break">물류전사 %: [sales] 채널별 주간 이익율 › 가이드라인 탭 › 쿠팡 ‘물류전사’ 해당 분기 % (현재 7%). 이익율 행: 주간CM 탭의 이번 주 ‘쿠팡’ 행 번호. 키즈 광고비: 키즈 엑셀 주간이익(CPC포함) 광고비.</span></article>
+            <span class="break">물류전사 %: 노션 쿠팡 운영 메뉴얼 › 주간 KPI › ‘물류전사(매출대비)’ 월별 표에서 그 주의 월 값 (이익율 시트 가이드라인 탭과 같음). 한 번 넣으면 이 브라우저가 기억하고, 월이 바뀌어 %가 달라질 때만 고치면 됩니다. 이익율 행: 주간CM 탭의 이번 주 ‘쿠팡’ 행 번호. 키즈 광고비: 키즈 엑셀 주간이익(CPC포함) 광고비.</span></article>
         </div>
       </section>
 
@@ -1539,6 +1539,7 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
       R.W = W;
       K.F = W.unit * K.D; K.G = num($('#cpKidsAd').value); K.base = K.C - K.E - K.F - K.G; K.H = K.base - K.base / 11; K.I = K.D ? K.H / K.D : 0; K.J = K.C ? K.H / K.C : 0;
       R.K = K;
+      if (!str($('#cpShip').value)) R.warn.push(['err', '② 물류전사 %를 넣어야 배송비 · 공헌이익이 계산됩니다.']);
       if (F.in.length < 2) R.warn.push(['', '입고상세내역이 ' + F.in.length + '개입니다. 일반 · R계정 2개를 올려야 주간이익이 맞습니다.']);
     }
     // 광고보고서 → CPC 인입SKU
@@ -1668,7 +1669,7 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
       body: K ? kv([['C 매출(납품)', fmt(K.C)], ['D 판매량', fmt(K.D)], ['E 원가총액', fmt(K.E)], ['F 배송비', fmt(K.F)], ['G 광고비', fmt(K.G)], ['이익율', pct(K.J)]]) : '', btns: [['C~G 복사', 'kCG', !K]] });
     COPY.kcCG = KC ? [Math.round(KC.C), KC.D, Math.round(KC.E), Math.round(KC.F), Math.round(KC.G)].join('\t') : ''; COPY.kcK = KC ? String(Math.round(KC.K)) : '';
     KS.push({ no: 'K8', title: 'Deliver_REPORT · CPC 인입SKU 이익 키즈', off: !KC, tgt: ['키즈 Deliver_REPORT', 'CPC 인입SKU 이익 표', wk + ' 줄 C열'],
-      how: ['광고보고서 상품명에 <b>키즈 · 아동 · 여아</b>가 들어간 줄만 계산', wk + ' 줄 <b>C열</b>에 C~G, <b>K열</b>에 판매액', '배송비 = 통합 개당 배송비 × 판매량'],
+      how: ['광고보고서 광고집행 상품명에 <b>키즈 · 아동 · 여아</b>가 들어간 줄만 계산 (노션: 원래는 SKUID로 키즈를 구분하고 vi 오류일 때만 키워드 · 지금은 키워드 기준, 차주 확인 후 조정)', wk + ' 줄 <b>C열</b>에 C~G, <b>K열</b>에 판매액', '매출(납품) = 공급가 × 판매수량 · 원가총액 = 원가 × 판매수량 · 배송비 = 통합 개당 배송비 × 판매량 · SKUID를 못 찾으면 아이템맵 평균값'],
       body: KC ? kv([['C 매출', fmt(KC.C)], ['D 판매량', fmt(KC.D)], ['E 원가총액', fmt(KC.E)], ['F 배송비', fmt(KC.F)], ['G 광고비', fmt(KC.G)], ['K 판매액', fmt(KC.K)], ['ROAS', pct(KC.L)]]) : '', btns: [['C~G 복사', 'kcCG', !KC], ['K 판매액', 'kcK', !KC]] });
     $('#cpKids').innerHTML = '<p class="hint">키즈 엑셀도 RAW 시트는 같은 자료를 넣습니다. 열 위치만 다릅니다(발주서 U열, 수불내역 M열). 데이터 넣고 새로고침 필수 · 이미지는 다 삭제.</p>' + KS.map(stepHtml).join('');
     // 구글시트
@@ -1709,7 +1710,9 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
   $('#cpReset').addEventListener('click', () => { F.in = []; F.po = []; F.ana = []; F.ad = null; F.stk = null; LOG = []; DUP = []; render(); });
   $('#cpRefClear').addEventListener('click', async () => { REF.im = REF.vi = REF.inv = null; for (const k of ['cpim', 'cpvi', 'cpinv']) await dbDel(k); render(); });
   ['#cpPromo', '#cpReview', '#cpKidsAd'].forEach(id => $(id).addEventListener('input', e => { const raw = e.target.value.replace(/[^0-9]/g, ''); e.target.value = raw ? (+raw).toLocaleString('ko-KR') : ''; render(); }));
-  ['#cpGmv', '#cpAdDay', '#cpShip'].forEach(id => $(id).addEventListener('input', render));
+  ['#cpGmv', '#cpAdDay'].forEach(id => $(id).addEventListener('input', render));
+  try { const sv = localStorage.getItem('cpShip'); if (sv) $('#cpShip').value = sv; } catch {}
+  $('#cpShip').addEventListener('input', e => { try { localStorage.setItem('cpShip', e.target.value); } catch {} render(); });
   $('#cpRow').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); render(); });
   $('#wk-cp').addEventListener('click', e => { const b = e.target.closest('[data-cp]'); if (!b || b.disabled) return; const t = COPY[b.dataset.cp]; if (t == null || t === '') return; copyText(b, t, b.textContent); });
 
