@@ -168,6 +168,21 @@ ol.need li.opt .st { background: var(--line); color: var(--muted); }
 ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
 @media (max-width: 560px) { ol.need li { grid-template-columns: 1fr; } }
 .need-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; border-top: 1px solid var(--line); padding-top: 10px; }
+.steps { display: grid; gap: 12px; }
+.stp { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0; }
+.stp.off { opacity: .6; }
+.stp h3 { margin: 0; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.stp .tgt { font-size: 0.8rem; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.stp .tgt span { background: var(--accent-soft); color: var(--accent); border-radius: 5px; padding: 1px 7px; font-weight: 600; }
+.stp .tgt i { font-style: normal; color: var(--muted); }
+.stp ol { margin: 0; padding-left: 20px; display: grid; gap: 3px; font-size: 0.85rem; }
+.stp ol b { font-weight: 600; }
+.stp .btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.stp .meta { font-size: 0.78rem; color: var(--muted); }
+.stp pre { margin: 0; font-family: var(--mono); font-size: 0.72rem; background: var(--bg); border-radius: 6px; padding: 8px; overflow-x: auto; max-height: 140px; color: var(--muted); }
+.kvt { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 14px; }
+.kvt div { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-size: 0.85rem; border-bottom: 1px solid var(--line); padding: 3px 0; }
+.kvt b { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 .refs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
 .ref { display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); min-width: 0; }
 .ref.ok { border-color: var(--accent); }
@@ -371,19 +386,68 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
     </div>
 
     <div id="wk-cp" class="pane" role="tabpanel" aria-labelledby="sub-cp" hidden>
-      <div class="panel">
-        <div class="panel-head"><h3><span class="step">준비 중</span>쿠팡 주간 KPI · 납품율 엑셀</h3></div>
-        <p class="hint">11/16~22(202647주) 자료로 엑셀 값과 똑같이 나오는지 맞춘 뒤 이 탭을 채웁니다. 완성되면 파일별로 ‘어디서 받기 → 올리기 → 엑셀 어느 시트 몇 열 몇 행에 붙이기 → 구글시트 어느 칸에 적기’가 순서대로 나옵니다.</p>
-        <ol class="need">
-          <li class="todo"><span class="st">받을 예정</span><div><b>입고상세내역</b> 일반 · R<small>매출(납품) · 판매량 · 원가총액, Week 상위 20</small></div></li>
-          <li class="todo"><span class="st">받을 예정</span><div><b>발주sku리스트</b> 일반 · R, 2달치<small>2.쿠팡발주서 시트</small></div></li>
-          <li class="todo"><span class="st">받을 예정</span><div><b>애널리틱스 기본 물류 지표</b> 일반 · R<small>쿠팡재고 · 쿠팡 수불내역 시트</small></div></li>
-          <li class="todo"><span class="st">받을 예정</span><div><b>광고보고서</b> 상품 단위, 일반계정<small>CPC 인입SKU 이익 · 키즈 KPI</small></div></li>
-          <li class="todo"><span class="st">받을 예정</span><div><b>셀메이트 재고</b> 착구 · 리토<small>2.재고현황 시트</small></div></li>
-          <li class="todo"><span class="st">받을 예정</span><div><b>vi 파일 · B2B 쿠팡 ITEM MAP</b><small>VIID → SKUID, 원가 · 공급가</small></div></li>
-          <li class="todo"><span class="st">받을 예정</span><div><b>프로모션비용 · 리뷰/슬롯 · 물류전사 %</b><small>광고비 · 배송비</small></div></li>
-        </ol>
+      <nav class="jump"><a href="#cp-files">1. 파일 올리기</a><a href="#cp-input">2. 숫자 입력</a><a href="#cp-sum">3. 결과 확인</a><a href="#cp-excel">4. 엑셀(통합)</a><a href="#cp-kids">5. 엑셀(키즈)</a><a href="#cp-gs">6. 구글시트</a></nav>
+      <p class="hint">매주 월요일, <b>지난주 월~일</b> 기준입니다. 위에서부터 순서대로 하면 됩니다. ① 파일 받아서 올리기 → ② 숫자 몇 개 입력 → ③ 결과 확인 → ④⑤ 엑셀 두 개에 시트별로 붙여넣기 → ⑥ 구글시트에 적기.</p>
+
+      <div id="cp-files" class="drop wdrop">
+        <div class="wdrop-head">
+          <p><strong>① 아래 파일들을 여기로 끌어다 놓기</strong>
+            <small>일반계정 · R계정 파일을 같이 올리면 알아서 합칩니다. 파일 종류도 알아서 구분해요. <b>R계정은 서플라이허브에서 R계정으로 다시 로그인한 뒤</b> 받아야 합니다.</small></p>
+          <div class="controls"><button id="cppick" class="btn" type="button">파일 선택</button><input id="cpfile" type="file" accept=".xlsx,.xls,.csv,.xlsb" multiple hidden><button class="btn ghost" type="button" id="cpReset">이번 주 파일 비우기</button></div>
+        </div>
+        <div id="cpNeed"></div>
+        <div class="need-foot"><span class="hint">원가 · 공급가 등 기준 파일 내용은 이 브라우저에만 저장되고 사이트에는 들어있지 않습니다.</span><button class="btn ghost" type="button" id="cpRefClear">기준 파일 지우기</button></div>
       </div>
+      <div id="cplog" class="log" aria-live="polite"></div>
+
+      <section class="ch" id="cp-input">
+        <div class="ch-head"><h2>② 숫자 입력</h2><span class="chip idle" id="cpInChip">직접 확인해서 넣는 값</span></div>
+        <div class="cards">
+          <article class="card"><h3><span class="step">광고</span>Deliver_REPORT 광고비용</h3>
+            <div class="inputs">
+              <label for="cpPromo">프로모션 <input id="cpPromo" type="text" inputmode="numeric" placeholder="일반 + R 합계" autocomplete="off"></label>
+              <label for="cpReview">리뷰/슬롯 <input id="cpReview" type="text" inputmode="numeric" placeholder="없으면 비우기" autocomplete="off"></label>
+            </div>
+            <span class="break">프로모션: 서플라이허브 › 정산 › 공제금액계정 › 쿠폰 프로모션 › 지난주 · 펀딩 금액 합계 (일반 + R계정 더해서). 리뷰/슬롯: 그 주 리뷰·슬롯 작업 비용. 쿠팡 CPC(광고보고서 광고비 합계)는 자동.</span></article>
+          <article class="card"><h3><span class="step">CPC</span>[SALES] 쿠팡 CPC REPORT › DAY</h3>
+            <div class="inputs">
+              <label for="cpGmv">매출 (VAT제외) <input id="cpGmv" type="text" placeholder="지난주 7칸 붙여넣기 또는 합계" autocomplete="off"></label>
+              <label for="cpAdDay">광고비 <input id="cpAdDay" type="text" placeholder="지난주 7칸 붙여넣기 또는 합계" autocomplete="off"></label>
+            </div>
+            <span class="break" id="cpDayNote">DAY 시트에서 지난주 월~일 7칸을 복사해 붙이면 합계를 냅니다. 매출 → Deliver_REPORT 매출액 · 광고비 → 이익율 시트 · 주간 KPI 광고비.</span></article>
+          <article class="card"><h3><span class="step">설정</span>물류전사 % · 시트 행 번호</h3>
+            <div class="inputs">
+              <label for="cpShip">물류전사 % <input id="cpShip" type="text" inputmode="decimal" value="7" autocomplete="off"></label>
+              <label for="cpRow">이익율 행 <input id="cpRow" type="text" inputmode="numeric" placeholder="예: 2985" autocomplete="off"></label>
+              <label for="cpKidsAd">키즈 광고비 <input id="cpKidsAd" type="text" inputmode="numeric" placeholder="키즈 주간이익 광고비" autocomplete="off"></label>
+            </div>
+            <span class="break">물류전사 %: [sales] 채널별 주간 이익율 › 가이드라인 탭 › 쿠팡 ‘물류전사’ 해당 분기 % (현재 7%). 이익율 행: 주간CM 탭의 이번 주 ‘쿠팡’ 행 번호. 키즈 광고비: 키즈 엑셀 주간이익(CPC포함) 광고비.</span></article>
+        </div>
+      </section>
+
+      <section class="ch" id="cp-sum">
+        <div class="ch-head"><h2>③ 결과 확인</h2><span id="cpChip" class="chip idle">입고상세내역 대기 중</span></div>
+        <div class="tbl panel"><table id="cpSumTbl">
+          <thead><tr><th>항목</th><th class="num">주간이익 (CPC포함 전체)</th><th class="num">CPC 인입SKU</th><th class="num">키즈 주간이익</th><th class="num">키즈 CPC</th></tr></thead>
+          <tbody id="cpSum"></tbody>
+        </table></div>
+        <details id="cpMissD" hidden><summary>원가 · 공급가를 못 찾은 SKU <span class="sub" id="cpMissN"></span></summary><div class="tbl"><table><thead><tr><th>구분</th><th>SKU / 옵션ID</th><th>상품명</th><th class="num">수량</th><th>처리</th></tr></thead><tbody id="cpMiss"></tbody></table></div></details>
+      </section>
+
+      <section class="ch" id="cp-excel">
+        <div class="ch-head"><h2>④ 엑셀 (통합)</h2><span class="chip idle">G:\공유 드라이브\세일즈팀(공용)\B2B\로켓배송\(SALES) 로켓배송 납품율 확인 ver 1.5.xlsb</span></div>
+        <div id="cpXl" class="steps"></div>
+      </section>
+
+      <section class="ch" id="cp-kids">
+        <div class="ch-head"><h2>⑤ 엑셀 (키즈)</h2><span class="chip idle">같은 폴더 · (SALES) 로켓배송 납품율 확인 ver 1.5(키즈).xlsx</span></div>
+        <div id="cpKids" class="steps"></div>
+      </section>
+
+      <section class="ch" id="cp-gs">
+        <div class="ch-head"><h2>⑥ 구글시트</h2><span class="chip idle">이익율 · 주간 KPI</span></div>
+        <div id="cpGs" class="steps"></div>
+      </section>
     </div>
 
     <div id="wk-ss" class="pane" role="tabpanel" aria-labelledby="sub-ss">
@@ -1314,7 +1378,342 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
   ['dragleave', 'drop'].forEach(t => wd.addEventListener(t, e => { e.preventDefault(); wd.classList.remove('over'); }));
   document.addEventListener('drop', e => { e.preventDefault(); wd.classList.remove('over'); if (!$('#pane-weekly').hidden && !$('#wk-ss').hidden) handleWeekly([...e.dataTransfer.files]); });
 
+  window._wk = { dbGet, dbSet, dbDel, headerAt, ls };
   (async () => { ref.im = (await dbGet('im')) || null; ref.fw = (await dbGet('fw')) || null; ref.inv = (await dbGet('inv')) || null; ref.alias = (await dbGet('alias')) || null; renderRefs(); compute(); })();
+})();
+</script>
+
+<script>
+/* ================= 주간 (쿠팡 로켓배송) ================= */
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const fmt = n => Math.round(n).toLocaleString('ko-KR');
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const num = v => (typeof v === 'number' ? v : +String(v ?? '').replace(/[^0-9.-]/g, '') || 0);
+  const str = v => String(v ?? '').trim();
+  const pct = x => (x * 100).toFixed(1) + '%';
+  const { dbGet, dbSet, dbDel, headerAt } = window._wk;
+  const cell = v => String(v ?? '').replace(/[\t\r\n]+/g, ' ');
+  const tsv = rows => rows.map(r => r.map(cell).join('\t')).join('\n');
+  const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+  const KIDS_KW = ['키즈', '아동', '여아'];
+
+  // ---------- 상태 ----------
+  const F = { in: [], po: [], ana: [], ad: null, stk: null };     // 이번 주 파일 (새로고침하면 비워짐)
+  const REF = { im: null, vi: null, inv: null };                   // 기준 파일 (브라우저에 저장)
+  let RES = null;
+
+  // ---------- 파일 목록 ----------
+  const NEED = [
+    ['week', '매주 올리는 파일', '쿠팡 서플라이 허브 · 일반계정, R계정 둘 다 (R은 R계정으로 다시 로그인해서)', [
+      ['in', '입고상세내역', '일반 · R 2개', 'Coupang_Stocked_Data_List(날짜).xlsx', ['물류', '입고 상세내역', '기간: 지난주 월~일', '검색', '다운로드'], '매출(납품) · 판매량 · 원가총액 · Week 입고 Top20'],
+      ['po', '발주SKU리스트', '일반 · R × 2달 = 4개', 'PO_SKU_LIST_날짜.csv', ['물류', '발주SKU리스트', '1개월씩 2번 (오늘 기준 2달치)', '검색', '엑셀 다운로드'], '2.쿠팡발주서 시트 (납품율)'],
+      ['ana', '애널리틱스 기본 물류 지표', '일반 · R 2개', 'basic_operation_rocket_날짜.csv', ['애널리틱스', '프리미엄 데이터 2.0', '기본 물류 지표(Rocket)', '지난주 월~일', '다운로드'], '쿠팡재고 · 쿠팡 수불내역 시트'],
+      ['ad', '광고보고서 (상품 단위)', '일반계정만 1개', 'A00207667_pa_daily_vendorItem_날짜.xlsx', ['광고관리 (쿠팡 애즈 센터)', '광고보고서', '매출성장광고보고서', '기간: 지난주 · 일별 · 캠페인 모두선택', '구조: 캠페인 › 광고그룹 › 상품', '보고서 만들기 › 다운로드'], 'CPC 인입SKU 이익 · 키즈 CPC'],
+      ['stk', '셀메이트 재고', '1개', 'stk_stockList_날짜.csv', ['셀메이트', '재고관리', '재고 상품 관리', '재고 현황 목록', '확장필터 › 상품분류: 착한구두 · 리토', '검색 › 엑셀 다운로드 (양식: 재고확인)'], '2.재고현황 시트 (시간 꽤 걸림)'],
+    ]],
+    ['ref', '기준 파일', '한 번 올리면 이 브라우저가 기억 · 바뀐 주에만 다시', [
+      ['im', 'B2B 쿠팡 ITEM MAP', '1개', '[B2B] 쿠팡 ITEM MAP.xlsx', ['[B2B] 쿠팡 ITEM MAP 구글시트', '파일', '다운로드', 'Microsoft Excel (.xlsx)'], 'SKU ID → 원가 · 쿠팡 공급가 · 품번 · 카테 · 신규 SKU 생기면 다시'],
+      ['vi', 'vi 파일', 'vi.xlsx (+ vi(키즈).xlsx)', 'vi.xlsx', ['G:\\공유 드라이브\\세일즈팀(공용)\\B2B\\로켓배송', 'vi.xlsx'], '광고 옵션ID(VIID) → SKU ID · 새 상품 광고 시작하면 다시'],
+      ['inv', '인벤토리', '1개', 'Inventory [MD master].xlsx 또는 WH-Out-Q (Weekly).csv', ['Inventory [MD master] 구글시트', '파일', '다운로드', 'Microsoft Excel 또는 WH-Out-Q 탭 CSV'], '1.WH-Out-Q (Weekly) 시트 · 매주 (스마트스토어 탭과 같은 파일)'],
+    ]],
+  ];
+  function fileState(k) {
+    const n = { in: F.in.length, po: F.po.length, ana: F.ana.length, ad: F.ad ? 1 : 0, stk: F.stk ? 1 : 0, im: REF.im ? 1 : 0, vi: REF.vi ? 1 : 0, inv: REF.inv ? 1 : 0 }[k];
+    const want = { in: 2, po: 4, ana: 2 }[k] || 1;
+    const names = { in: F.in, po: F.po, ana: F.ana }[k]?.map(x => x.name) || (k === 'ad' ? [F.ad?.name] : k === 'stk' ? [F.stk?.name] : k === 'vi' ? (REF.vi?.files || []) : [REF[k]?.file]);
+    if (!n) return ['todo', '필요'];
+    if (n < want) return ['todo', '✓ ' + n + '개 / ' + want + '개 · ' + (want - n) + '개 더 (R계정 등)'];
+    return ['ok', '✓ ' + names.filter(Boolean).join(', ') + (REF[k]?.saved ? ' · ' + REF[k].saved + ' 저장' : '')];
+  }
+  function renderNeed() {
+    $('#cpNeed').innerHTML = NEED.map(([gk, title, sub, items], gi) => '<h4 class="need-h">' + esc(title) + ' <span class="sub">' + esc(sub) + '</span></h4><ol class="need" start="' + (gi ? 6 : 1) + '">' +
+      items.map(([k, name, cnt, fname, path, use]) => { const [cls, st] = fileState(k);
+        return '<li class="' + cls + '"><span class="st">' + esc(st) + '</span><div><b>' + esc(name) + '</b> <span class="sub">' + esc(cnt) + '</span> <span class="fname">' + esc(fname) + '</span><div class="path">' + path.map(p => '<span>' + esc(p) + '</span>').join('<i>›</i>') + '</div><small>' + esc(use) + '</small></div></li>'; }).join('') + '</ol>').join('');
+  }
+
+  // ---------- 파일 읽기 ----------
+  const sig = rows => rows.length + ':' + JSON.stringify(rows[1] || '') + JSON.stringify(rows[rows.length - 1] || '') + JSON.stringify(rows[Math.floor(rows.length / 2)] || '');
+  const objs = (rows, hi) => { const h = rows[hi].map(str); return rows.slice(hi + 1).filter(r => r && r.some(v => v != null && v !== '')).map(r => Object.fromEntries(h.map((k, i) => [k, r[i]]))); };
+  const clean = v => { let s = str(v); const m = s.match(/^="(.*)"$/s); if (m) s = m[1].replace(/""/g, '"'); else if (s.startsWith('=')) s = s.slice(1); return s; };
+  function buildIm(wb) {
+    const out = { sku: {}, n: 0 }; let cs = [], ss = [];
+    for (const sn of ['ITEM_LIST_쿠팡(로켓)전체상품 리스트', 'ITEM_LIST_AC', 'ITEM_LIST_리토']) {
+      const ws = wb.Sheets[sn]; if (!ws) continue;
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null });
+      const hi = headerAt(rows, ['SKU ID', '원가', '쿠팡 공급가']); if (hi < 0) continue;
+      const h = rows[hi].map(str), ix = n => h.indexOf(n);
+      for (const r of rows.slice(hi + 1)) {
+        const sku = str(r[ix('SKU ID')]).replace(/\.0+$/, ''); if (!/^\d+$/.test(sku)) continue;
+        const c = r[ix('원가')], s = r[ix('쿠팡 공급가')];
+        if (sn.startsWith('ITEM_LIST_쿠팡')) { if (typeof c === 'number') cs.push(c); if (typeof s === 'number') ss.push(s); }
+        if (!out.sku[sku]) out.sku[sku] = [typeof c === 'number' ? c : null, typeof s === 'number' ? s : null, str(r[ix('품번')]), ix('카테') >= 0 ? str(r[ix('카테')]) : ''];
+        out.n++;
+      }
+    }
+    if (!out.n) throw new Error('쿠팡 ITEM MAP에서 SKU ID · 원가 · 쿠팡 공급가 열을 찾지 못했습니다.');
+    out.avgC = sum(cs, x => x) / (cs.length || 1); out.avgS = sum(ss, x => x) / (ss.length || 1);
+    return out;
+  }
+  function addVi(wb, name) {
+    const out = REF.vi && REF.vi.map ? REF.vi : { map: {}, files: [] };
+    let n = 0;
+    for (const sn of wb.SheetNames) {
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, raw: true, defval: null });
+      let hi = headerAt(rows, ['vendoritemid', 'skuseq']), a = 'vendoritemid', b = 'skuseq';
+      if (hi < 0) { hi = headerAt(rows, ['VIID', 'SKU ID']); a = 'VIID'; b = 'SKU ID'; }
+      if (hi < 0) continue;
+      const h = rows[hi].map(str), ia = h.indexOf(a), ib = h.indexOf(b);
+      for (const r of rows.slice(hi + 1)) { const v = str(r[ia]).replace(/\.0+$/, ''), s = str(r[ib]).replace(/\.0+$/, ''); if (v && s && !out.map[v]) { out.map[v] = s; n++; } }
+    }
+    if (!n && !out.files.length) throw new Error('vi 파일에서 vendoritemid · skuseq (또는 VIID · SKU ID) 열을 찾지 못했습니다.');
+    if (!out.files.includes(name)) out.files.push(name);
+    out.n = Object.keys(out.map).length;
+    return out;
+  }
+  function buildInv(rows) {
+    const hi = headerAt(rows, ['No.', 'ProductName', 'STATUS']); if (hi < 0) throw new Error('인벤토리에서 No. ~ STATUS 열을 찾지 못했습니다.');
+    const h = rows[hi].map(str), a = h.indexOf('No.'), b = h.indexOf('STATUS');
+    const out = rows.slice(hi + 1).filter(r => r && str(r[a + 3])).map(r => r.slice(a, b + 1).map(v => v == null ? '' : v));
+    return { rows: out, n: out.length };
+  }
+  async function processCp(buf, name) {
+    const SN = ['ITEM_LIST_쿠팡(로켓)전체상품 리스트', 'ITEM_LIST_AC', 'ITEM_LIST_리토', 'WH-Out-Q (Weekly)', 'Sheet1', '최신'];
+    const isCsv = /\.csv$/i.test(name);
+    const wb = isCsv ? { SheetNames: ['csv'], Sheets: { csv: XLSX.utils.aoa_to_sheet(await readRows(buf, name)) } } : await readRows(buf, name, { all: true, sheets: [0, ...SN] });
+    const today = new Date().toLocaleDateString('ko-KR');
+    if (wb.Sheets['ITEM_LIST_쿠팡(로켓)전체상품 리스트']) { REF.im = { ...buildIm(wb), file: name, saved: today }; await dbSet('cpim', REF.im); return '쿠팡 ITEM MAP 저장'; }
+    const first = XLSX.utils.sheet_to_json(wb.Sheets[wb.Sheets['WH-Out-Q (Weekly)'] ? 'WH-Out-Q (Weekly)' : wb.SheetNames[0]], { header: 1, raw: !isCsv ? true : false, defval: null });
+    if (headerAt(first, ['No.', 'ProductName', 'STATUS']) >= 0) {
+      // 엑셀 시트와 같은 표시값(¥25.00 등)으로 붙도록 서식 그대로 읽기
+      const shown = XLSX.utils.sheet_to_json(wb.Sheets[wb.Sheets['WH-Out-Q (Weekly)'] ? 'WH-Out-Q (Weekly)' : wb.SheetNames[0]], { header: 1, raw: false, defval: null });
+      REF.inv = { ...buildInv(shown), file: name, saved: today }; await dbSet('cpinv', REF.inv); return '인벤토리 (WH-Out-Q) 저장';
+    }
+    if (headerAt(first, ['vendoritemid']) >= 0 || headerAt(first, ['VIID', 'SKU ID']) >= 0) { REF.vi = { ...addVi(wb, name), saved: today }; await dbSet('cpvi', REF.vi); return 'vi 파일 저장'; }
+    let hi;
+    // 같은 내용 파일을 두 번 올리면 한 번만 반영 (R계정을 일반계정으로 받은 경우 등)
+    const add = (list, label) => { const sg = sig(first); const same = list.find(x => x.sig === sg);
+      if (same) { DUP.push(label + ': ' + name + ' 은(는) ' + same.name + ' 와 내용이 똑같아 한 번만 반영했습니다. R계정 파일이라면 R계정으로 로그인해서 다시 받아주세요.'); return label + ' (중복 · 제외)'; }
+      list.push({ name, sig: sg, rows: objs(first, hi) }); return label; };
+    if ((hi = headerAt(first, ['SKU번호', '총단가', '구분'])) >= 0) return add(F.in, '입고상세내역');
+    if ((hi = headerAt(first, ['발주번호', 'SKU ID', '확정수량'])) >= 0) return add(F.po, '발주SKU리스트');
+    if ((hi = headerAt(first, ['날짜', 'SKU ID', '현재재고수량', '출고수량'])) >= 0) return add(F.ana, '애널리틱스 기본 물류 지표');
+    if ((hi = headerAt(first, ['광고집행 옵션ID', '광고비'])) >= 0) { F.ad = { name, rows: objs(first, hi) }; return '광고보고서'; }
+    if ((hi = headerAt(first, ['상품코드(카페)', '바코드번호'])) >= 0) { F.stk = { name, rows: first.slice(hi).map(r => (r || []).map(clean)) }; return '셀메이트 재고'; }
+    throw new Error('어떤 파일인지 알아보지 못했습니다. 위 목록의 파일인지 확인해 주세요.');
+  }
+
+  // ---------- 계산 ----------
+  const isoWeek = d => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const dn = (t.getUTCDay() + 6) % 7; t.setUTCDate(t.getUTCDate() - dn + 3); const fy = t.getUTCFullYear(); const f = new Date(Date.UTC(fy, 0, 4)); return fy * 100 + 1 + Math.round(((t - f) / 864e5 - 3 + ((f.getUTCDay() + 6) % 7)) / 7); };
+  const parseD = s => { const m = str(s).match(/(\d{4})\D?(\d{2})\D?(\d{2})/); return m ? new Date(+m[1], m[2] - 1, +m[3]) : null; };
+  const ymd = d => d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
+  const sumInput = id => { const v = str($(id).value); if (!v) return null; const ns = v.split(/[\s\t\n]+/).map(t => num(t)).filter(x => x); return ns.length ? sum(ns, x => x) : 0; };
+  function skuInfo(sku) { const r = REF.im?.sku[sku]; return { cost: r?.[0], sup: r?.[1], code: r?.[2] || '', cate: r?.[3] || '' }; }
+
+  function compute() {
+    const R = { miss: [], warn: [] };
+    // 입고
+    const ins = F.in.flatMap(f => f.rows).filter(r => str(r['구분']));
+    if (ins.length) {
+      const dates = ins.map(r => parseD(r['입고/반출시각'])).filter(Boolean).sort((a, b) => a - b);
+      const mon = new Date(dates[0]); mon.setDate(mon.getDate() - (mon.getDay() + 6) % 7); const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+      R.week = isoWeek(mon); R.period = ymd(mon) + '~' + ymd(sun);
+      if (dates.length && dates[dates.length - 1] > new Date(sun.getTime() + 864e5)) R.warn.push(['', '입고상세내역 날짜가 한 주를 넘습니다 (' + ymd(dates[0]) + ' ~ ' + ymd(dates[dates.length - 1]) + ').']);
+      const W = { C: 0, D: 0, E: 0 }, K = { C: 0, D: 0, E: 0 }, top = {}, miss = {};
+      for (const r of ins) {
+        const out = /반출/.test(str(r['구분'])) ? -1 : 1, q = num(r['수량']) * out, amt = num(r['총단가']) * out, sku = str(r['SKU번호']);
+        const s = skuInfo(sku); let c = s.cost;
+        if (c == null) { c = REF.im?.avgC || 0; const m = miss[sku] || (miss[sku] = ['입고', sku, r['SKU명'], 0, '원가 평균값']); m[3] += q; }
+        W.C += amt; W.D += q; W.E += c * q;
+        if (s.cate === '키즈') { K.C += amt; K.D += q; K.E += c * q; }
+        const code = s.code || ((str(r['SKU명']).match(/([A-Z]{4,}[A-Za-z]*\d[A-Za-z]\d{2,}[A-Za-z0-9]*)/) || [])[1]) || sku;
+        const t = top[code] || (top[code] = [code, 0, 0]); t[1] += q; t[2] += amt;
+      }
+      R.miss.push(...Object.values(miss));
+      R.top = Object.values(top).sort((a, b) => b[2] - a[2]).slice(0, 20);
+      const ship = num($('#cpShip').value) / 100;
+      const promo = num($('#cpPromo').value), review = num($('#cpReview').value);
+      R.adSum = F.ad ? sum(F.ad.rows, r => num(r['광고비'])) : null;
+      W.F = W.C * ship; W.G = promo + (R.adSum || 0) + review; W.unit = W.D ? W.F / W.D : 0;
+      W.base = W.C - W.E - W.F - W.G; W.H = W.base - W.base / 11; W.I = W.D ? W.H / W.D : 0; W.J = W.C ? W.H / W.C : 0;
+      R.W = W;
+      K.F = W.unit * K.D; K.G = num($('#cpKidsAd').value); K.base = K.C - K.E - K.F - K.G; K.H = K.base - K.base / 11; K.I = K.D ? K.H / K.D : 0; K.J = K.C ? K.H / K.C : 0;
+      R.K = K;
+      if (F.in.length < 2) R.warn.push(['', '입고상세내역이 ' + F.in.length + '개입니다. 일반 · R계정 2개를 올려야 주간이익이 맞습니다.']);
+    }
+    // 광고보고서 → CPC 인입SKU
+    if (F.ad) {
+      const C = { C: 0, D: 0, E: 0, G: 0, K: 0 }, KC = { C: 0, D: 0, E: 0, G: 0, K: 0 }, miss = {};
+      for (const r of F.ad.rows) {
+        const q = num(r['총 판매수량(1일)']), v = str(r['광고집행 옵션ID']).replace(/\.0+$/, ''), sku = REF.vi?.map[v];
+        const s = sku ? skuInfo(sku) : {}; let c = s.cost, p = s.sup;
+        if ((c == null || p == null) && q) { const m = miss[v] || (miss[v] = ['광고', v + (sku ? ' → ' + sku : ''), r['광고집행 상품명'], 0, sku ? '아이템맵에 없음 → 평균값' : 'vi에 없음 → 평균값']); m[3] += q; }
+        if (c == null) c = REF.im?.avgC || 0; if (p == null) p = REF.im?.avgS || 0;
+        const add = (o) => { o.C += p * q; o.D += q; o.E += c * q; o.G += num(r['광고비']); o.K += num(r['총 전환매출액(1일)']); };
+        add(C);
+        if (KIDS_KW.some(k => str(r['광고집행 상품명']).includes(k))) add(KC);
+      }
+      R.miss.push(...Object.values(miss));
+      for (const o of [C, KC]) { o.F = (R.W?.unit || 0) * o.D; o.H = o.C - (o.E + o.F + o.G); o.I = o.D ? o.H / o.D : 0; o.J = o.C ? o.H / o.C : 0; o.L = o.G ? o.K / o.G : 0; o.M = o.G ? o.H / o.G : 0; }
+      R.C = C; R.KC = KC;
+      if (!REF.vi || !REF.im) R.warn.push(['err', 'vi 파일 · 쿠팡 ITEM MAP이 있어야 CPC 인입SKU 원가 · 공급가를 계산합니다.']);
+    }
+    // 발주
+    if (F.po.length) {
+      const seen = new Set(); let dup = 0; const rows = [];
+      for (const r of F.po.flatMap(f => f.rows)) { const k = str(r['발주번호']) + '|' + str(r['SKU ID']); if (seen.has(k)) { dup++; continue; } seen.add(k); rows.push(r); }
+      rows.sort((a, b) => str(a['발주일']).localeCompare(str(b['발주일'])) || num(a['발주번호']) - num(b['발주번호']));
+      R.po = { rows: rows.map(r => [r['발주번호'], '', r['SKU ID'], r['SKU 이름'], r['SKU Barcode'], r['물류센터'], r['입고예정일'], r['발주일'], r['발주수량'], r['확정수량'], r['입고수량']]), first: str(rows[0]?.['발주번호']), firstDate: str(rows[0]?.['발주일']).slice(0, 10), lastDate: str(rows[rows.length - 1]?.['발주일']).slice(0, 10), dup };
+      if (dup) R.warn.push(['', '발주SKU리스트에서 겹치는 줄 ' + fmt(dup) + '줄(같은 발주번호 + SKU)을 한 번만 넣었습니다. 같은 파일을 두 번 받은 건 아닌지 확인해 주세요.']);
+    }
+    // 애널리틱스
+    if (F.ana.length) {
+      const all = F.ana.flatMap(f => f.rows);
+      const last = all.reduce((m, r) => str(r['날짜']) > m ? str(r['날짜']) : m, '');
+      const st = new Map();
+      for (const r of all) if (str(r['날짜']) === last) { const k = str(r['SKU ID']); const o = st.get(k) || { bc: str(r['바코드']), n: 0 }; o.n += num(r['현재재고수량']); st.set(k, o); }
+      R.stock = { date: last, rows: [...st].map(([k, o]) => [last, '', '', '', '', '', k, '', o.bc, '', '', '', '', o.n]) };
+      const sb = all.filter(r => num(r['출고수량']) > 0).sort((a, b) => str(a['날짜']).localeCompare(str(b['날짜'])));
+      R.sales = { rows: sb.map(r => [str(r['날짜']), str(r['SKU ID']), '', str(r['바코드']), '', '', num(r['출고수량'])]), qty: sum(sb, r => num(r['출고수량'])), first: str(sb[0]?.['날짜']), last: str(sb[sb.length - 1]?.['날짜']) };
+    }
+    if (F.stk) R.stk = F.stk.rows;
+    if (REF.inv) R.wh = REF.inv.rows;
+    // 입력값
+    R.gmv = sumInput('#cpGmv'); R.adDay = sumInput('#cpAdDay');
+    if (R.W && R.adDay != null) { const W = R.W; R.M = { C: W.C, D: W.D, G: W.E, I: Math.round(W.F), J: R.adDay }; R.M.base = Math.round(R.M.C - R.M.G - R.M.I - R.M.J); R.M.N = Math.round(R.M.base / 11); R.M.P = R.M.base - R.M.N; R.M.Q = R.M.D ? R.M.P / R.M.D : 0; R.M.R = R.M.C ? R.M.P / R.M.C : 0; }
+    return R;
+  }
+
+  // ---------- 화면 ----------
+  const big = (rows) => rows.length > 3000;
+  function stepHtml(o) {
+    return '<article class="stp' + (o.off ? ' off' : '') + '"><h3><span class="step">' + esc(o.no) + '</span>' + esc(o.title) + (o.meta ? ' <span class="meta">' + esc(o.meta) + '</span>' : '') + '</h3>' +
+      (o.tgt ? '<div class="tgt">' + o.tgt.map((t, i) => (i ? '<i>›</i>' : '') + '<span>' + esc(t) + '</span>').join('') + '</div>' : '') +
+      (o.body || '') + (o.how ? '<ol>' + o.how.map(h => '<li>' + h + '</li>').join('') + '</ol>' : '') +
+      (o.btns?.length ? '<div class="btns">' + o.btns.map(([lab, key, dis]) => '<button class="copy' + (dis ? '' : ' primary') + '" type="button" data-cp="' + esc(key) + '"' + (dis ? ' disabled' : '') + '>' + esc(lab) + '</button>').join('') + '</div>' : '') +
+      (o.pre ? '<pre>' + esc(o.pre) + '</pre>' : '') + '</article>';
+  }
+  const COPY = {};
+  const prev = rows => rows.slice(0, 3).map(r => r.map(cell).join(' | ')).join('\n') + (rows.length > 3 ? '\n… 총 ' + fmt(rows.length) + '줄' : '');
+  const kv = (pairs) => '<div class="kvt">' + pairs.map(([k, v]) => '<div><span>' + esc(k) + '</span><b>' + v + '</b></div>').join('') + '</div>';
+  function rawSteps(R, kids) {
+    const X = kids ? { po: 'U', poEnd: 'AE', poF: 'A~T', sale: 'M', saleEnd: 'S', saleF: 'A~L', stF: 'P~', stkF: 'A~S' } : { po: 'R', poEnd: 'AB', poF: 'A~Q', sale: 'J', saleEnd: 'P', saleF: 'A~I', stF: 'P~', stkF: 'A~S' };
+    const p = kids ? 'k' : 'm', S = [];
+    COPY[p + 'po'] = R.po ? tsv(R.po.rows) : ''; COPY[p + 'stock'] = R.stock ? tsv(R.stock.rows) : ''; COPY[p + 'sales'] = R.sales ? tsv(R.sales.rows) : '';
+    COPY[p + 'wh'] = R.wh ? tsv(R.wh) : ''; COPY[p + 'stk'] = R.stk ? tsv(R.stk) : '';
+    S.push({ no: '1', title: '2.쿠팡발주서', off: !R.po, meta: R.po ? fmt(R.po.rows.length) + '줄 · 발주일 ' + R.po.firstDate + ' ~ ' + R.po.lastDate : '발주SKU리스트 필요',
+      tgt: ['2.쿠팡발주서 시트', X.po + '열(발주번호)부터'],
+      how: ['Ctrl+F로 <b>' + esc(R.po?.first || '(맨 위 발주번호)') + '</b> 찾기 (' + X.po + '열 발주번호, 붙일 자료에서 발주일이 가장 빠른 발주)', '찾은 행부터 맨 아래까지 <b>' + X.po + '~' + X.poEnd + '열</b> 내용을 지우기 (왼쪽 ' + X.poF + '열 수식은 그대로)', '그 행 <b>' + X.po + '열</b>을 누르고 붙여넣기', '왼쪽 ' + X.poF + '열 수식을 새 마지막 행까지 끌어내리기 (수식이 없는 행만)'],
+      btns: [['발주서 복사 (' + (R.po ? fmt(R.po.rows.length) : 0) + '줄)', p + 'po', !R.po]], pre: R.po ? prev(R.po.rows) : '' });
+    S.push({ no: '2', title: '쿠팡재고', off: !R.stock, meta: R.stock ? fmt(R.stock.rows.length) + ' SKU · ' + R.stock.date + ' 기준' : '애널리틱스 필요',
+      tgt: ['쿠팡재고 시트', 'A2부터 (A~N열)'],
+      how: ['기존 A2:N 끝까지 내용 지우기 (' + X.stF + ' 수식 열은 그대로)', '<b>A2</b>를 누르고 붙여넣기', '오른쪽 수식 열을 붙인 행 수에 맞춰 끌어내리거나 남는 행은 지우기', '사이트가 대신 한 일: 가장 최근 날짜만 · SKU 중복 제거 · 바코드 · 현재재고 합계 (기존 수작업 xlookup / sumif)'],
+      btns: [['쿠팡재고 복사 (' + (R.stock ? fmt(R.stock.rows.length) : 0) + '줄)', p + 'stock', !R.stock]], pre: R.stock ? prev(R.stock.rows) : '' });
+    S.push({ no: '3', title: '쿠팡 수불내역', off: !R.sales, meta: R.sales ? fmt(R.sales.rows.length) + '줄 · 판매 ' + fmt(R.sales.qty) + '개 · ' + R.sales.first + ' ~ ' + R.sales.last : '애널리틱스 필요',
+      tgt: ['쿠팡 수불내역 시트', '맨 아래 빈 행 ' + X.sale + '열(날짜)부터'],
+      how: ['이미 같은 날짜(' + esc(R.sales?.first || '') + '~)가 들어가 있지 않은지 ' + X.sale + '열 맨 아래 확인', '맨 아래 빈 행 <b>' + X.sale + '열</b>을 누르고 붙여넣기 (' + X.sale + '~' + X.saleEnd + '열)', '왼쪽 ' + X.saleF + '열 수식을 새 마지막 행까지 끌어내리기', '사이트가 대신 한 일: 날짜 오름차순 · 판매수량(출고수량) 0 제외'],
+      btns: [['수불내역 복사 (' + (R.sales ? fmt(R.sales.rows.length) : 0) + '줄)', p + 'sales', !R.sales]], pre: R.sales ? prev(R.sales.rows) : '' });
+    S.push({ no: '4', title: '1.WH-Out-Q (Weekly)', off: !R.wh, meta: R.wh ? fmt(R.wh.length) + '줄' : '인벤토리 필요',
+      tgt: ['1.WH-Out-Q (Weekly) 시트', 'D7부터 (No. ~ STATUS)'],
+      how: ['D7부터 아래 D~P열 기존 내용 지우기', '<b>D7</b>을 누르고 붙여넣기', '왼쪽 A~C열 수식을 마지막 행까지 끌어내리기'],
+      btns: [['WH-Out-Q 복사 (' + (R.wh ? fmt(R.wh.length) : 0) + '줄)', p + 'wh', !R.wh]], pre: R.wh ? prev(R.wh) : '' });
+    S.push({ no: '5', title: '2.재고현황', off: !R.stk, meta: R.stk ? fmt(R.stk.length) + '줄 (제목 포함)' : '셀메이트 재고 필요',
+      tgt: ['2.재고현황 시트', 'T1부터 (제목 줄 포함)'],
+      how: ['T열부터 오른쪽 기존 내용 전부 지우기', '<b>T1</b>을 누르고 붙여넣기', '왼쪽 ' + X.stkF + '열 수식을 맨 마지막 행까지 맞추기 (모자라면 끌어내리고, 남으면 지우기)', '사이트가 대신 한 일: 셀메이트 CSV의 =&quot;…&quot; 표기 정리'],
+      btns: [['재고현황 복사 (' + (R.stk ? fmt(R.stk.length) : 0) + '줄)', p + 'stk', !R.stk]], pre: R.stk ? prev(R.stk.slice(0, 3)) + '\n… 총 ' + fmt(R.stk.length) + '줄' : '' });
+    S.push({ no: '6', title: 'PIVOT 새로고침', tgt: ['PIVOT 시트'], how: ['데이터 › <b>모두 새로 고침</b>', '피벗 필터 <b>HOOK2</b>에서 가장 오래된 주차 1개는 끄고, 새 주차(' + esc(R.week || '') + ')가 생겼으면 켜기', '여기까지가 RAW 데이터 넣는 과정'] });
+    return S;
+  }
+  function render() {
+    const R = RES = compute();
+    renderNeed();
+    // 결과 표
+    const W = R.W, C = R.C, K = R.K, KC = R.KC;
+    const row = (lab, f, cls) => '<tr' + (cls ? ' class="' + cls + '"' : '') + '><td>' + lab + '</td>' + [W, C, K, KC].map(o => '<td class="num">' + (o ? f(o) : '—') + '</td>').join('') + '</tr>';
+    $('#cpSum').innerHTML = (W || C) ? [row('매출 (납품 / 공급가×수량)', o => fmt(o.C)), row('판매량', o => fmt(o.D)), row('원가총액', o => fmt(o.E)), row('배송비', o => fmt(o.F)), row('광고비', o => fmt(o.G)), row('공헌이익', o => fmt(o.H)), row('개당마진', o => fmt(o.I)), row('이익율', o => pct(o.J)), row('판매액 (총 전환매출)', o => o.K != null ? fmt(o.K) : '—'), row('ROAS', o => o.L != null ? pct(o.L) : '—')].join('')
+      : '<tr><td colspan="5" class="hint">입고상세내역 · 광고보고서를 올리면 계산됩니다.</td></tr>';
+    const chip = $('#cpChip'); chip.className = R.week ? 'chip' : 'chip idle'; chip.textContent = R.week ? R.week + ' · ' + R.period : '입고상세내역 대기 중';
+    $('#cpMissD').hidden = !R.miss.length; $('#cpMissN').textContent = '· ' + R.miss.length + '개';
+    $('#cpMiss').innerHTML = R.miss.map(m => '<tr><td>' + esc(m[0]) + '</td><td>' + esc(m[1]) + '</td><td>' + esc(m[2]) + '</td><td class="num">' + fmt(m[3]) + '</td><td>' + esc(m[4]) + '</td></tr>').join('');
+    $('#cpDayNote').textContent = (R.gmv != null || R.adDay != null) ? '합계: 매출 ' + (R.gmv != null ? fmt(R.gmv) : '-') + ' · 광고비 ' + (R.adDay != null ? fmt(R.adDay) : '-') : 'DAY 시트에서 지난주 월~일 7칸을 복사해 붙이면 합계를 냅니다. 매출 → Deliver_REPORT 매출액 · 광고비 → 이익율 시트 · 주간 KPI 광고비.';
+    // 엑셀 통합
+    const wk = R.week || '(이번 주차)';
+    const S = rawSteps(R, false);
+    COPY.dG = R.gmv != null ? String(Math.round(R.gmv)) : ''; COPY.dK = String(num($('#cpPromo').value)); COPY.dL = R.adSum != null ? String(Math.round(R.adSum)) : ''; COPY.dN = String(num($('#cpReview').value));
+    S.push({ no: '7', title: 'Deliver_REPORT · 납품율 표', off: !F.ad, tgt: ['Deliver_REPORT 시트', '위쪽 표', 'B열 ' + wk + ' 줄'],
+      how: ['표에서 <b>수식이 없는 칸</b>(매출액 · 프로모션비용 · 쿠팡CPC · 리뷰/슬롯)을 한 칸씩 위로 끌어올리기 → 맨 아래 ' + wk + ' 줄이 비게 됨', 'G열 매출액, K열 프로모션비용, L열 쿠팡CPC, N열 리뷰/슬롯에 아래 값 넣기'],
+      body: kv([['G 매출액', R.gmv != null ? fmt(R.gmv) : '② CPC REPORT 매출 입력'], ['K 프로모션비용', fmt(num($('#cpPromo').value))], ['L 쿠팡CPC', R.adSum != null ? fmt(R.adSum) : '광고보고서 필요'], ['N 리뷰/슬롯', fmt(num($('#cpReview').value))]]),
+      btns: [['G 매출액', 'dG', R.gmv == null], ['K 프로모션', 'dK', false], ['L 쿠팡CPC', 'dL', R.adSum == null], ['N 리뷰/슬롯', 'dN', false]] });
+    COPY.wCG = W ? [Math.round(W.C), W.D, Math.round(W.E), W.F.toFixed(2), Math.round(W.G)].join('\t') : '';
+    S.push({ no: '8', title: 'Deliver_REPORT · 주간이익(CPC포함 전체)', off: !W, tgt: ['Deliver_REPORT 시트', '주간이익(CPC포함 전체) 표', wk + ' 줄 C열'],
+      how: ['이 표도 수식 없는 칸(C~G)을 한 칸씩 끌어올리기', '맨 아래 ' + wk + ' 줄 <b>C열</b>을 누르고 붙여넣기 (C 매출(납품) · D 판매량 · E 원가총액 · F 배송비 · G 광고비)', 'H 공헌이익 · I 개당마진 · J 이익율은 수식'],
+      body: W ? kv([['C 매출(납품)', fmt(W.C)], ['D 판매량', fmt(W.D)], ['E 원가총액', fmt(W.E)], ['F 배송비', fmt(W.F) + ' (' + $('#cpShip').value + '%)'], ['G 광고비', fmt(W.G)], ['공헌이익', fmt(W.H)], ['개당마진', fmt(W.I)], ['이익율', pct(W.J)]]) : '',
+      btns: [['C~G 복사', 'wCG', !W]] });
+    COPY.cCG = C ? [Math.round(C.C), C.D, Math.round(C.E), C.F.toFixed(2), Math.round(C.G)].join('\t') : ''; COPY.cK = C ? String(Math.round(C.K)) : '';
+    S.push({ no: '9', title: 'Deliver_REPORT · CPC 인입SKU 이익', off: !C, tgt: ['Deliver_REPORT 시트', 'CPC 인입SKU 이익 표', wk + ' 줄 C열'],
+      how: ['수식 없는 칸(C~G, K)을 한 칸씩 끌어올리기', wk + ' 줄 <b>C열</b>에 C~G 붙여넣기, <b>K열</b>에 판매액 붙여넣기', 'H 공헌이익 · I · J · L ROAS · M ROI는 수식 (없으면 위 행에서 끌어내리기)', '사이트가 대신 한 일: 광고 옵션ID → vi로 SKU ID → 아이템맵 원가 · 공급가, 못 찾으면 아이템맵 평균값'],
+      body: C ? kv([['C 매출', fmt(C.C)], ['D 판매량', fmt(C.D)], ['E 원가총액', fmt(C.E)], ['F 배송비', fmt(C.F)], ['G 광고비', fmt(C.G)], ['K 판매액', fmt(C.K)], ['ROAS', pct(C.L)], ['ROI', pct(C.M)]]) : '',
+      btns: [['C~G 복사', 'cCG', !C], ['K 판매액', 'cK', !C]] });
+    COPY.tCode = R.top ? R.top.map(t => t[0]).join('\n') : ''; COPY.tVal = R.top ? R.top.map(t => t[1] + '\t' + Math.round(t[2])).join('\n') : '';
+    S.push({ no: '10', title: 'Week · 입고 Top20', off: !R.top, tgt: ['Week 시트', '입고 블록', 'K6 품번 · M6 입고수량 · N6 입고액'],
+      how: ['<b>K6</b>에 품번 20개 붙여넣기', '<b>M6</b>에 입고수량 · 입고액 붙여넣기 (L열 PIC는 건드리지 않기)', '이미지는 다 삭제 · 발주 / 판매 블록은 피벗 새로고침으로 채워짐', '사이트가 대신 한 일: 입고상세내역 품번(아이템맵)별 합계 → 입고액 큰 순 20개'],
+      btns: [['품번 20개', 'tCode', !R.top], ['수량 · 입고액', 'tVal', !R.top]], pre: R.top ? R.top.slice(0, 5).map((t, i) => (i + 1) + '. ' + t[0] + ' · ' + fmt(t[1]) + '개 · ' + fmt(t[2])).join('\n') + '\n…' : '' });
+    S.push({ no: '11', title: 'WEEK_TOP · 마무리', tgt: ['WEEK_TOP 시트'], how: ['엑셀 새로고침 후 이미지 다 삭제', '저장'] });
+    $('#cpXl').innerHTML = S.map(stepHtml).join('');
+    // 키즈
+    const KS = rawSteps(R, true).map(s => ({ ...s, no: 'K' + s.no }));
+    COPY.kCG = K ? [Math.round(K.C), K.D, Math.round(K.E), Math.round(K.F), Math.round(K.G)].join('\t') : '';
+    KS.push({ no: 'K7', title: 'Deliver_REPORT · 주간이익(CPC포함 전체) 키즈', off: !K, tgt: ['키즈 Deliver_REPORT', '주간이익 표', wk + ' 줄 C열'],
+      how: ['수식 없는 칸을 한 칸씩 끌어올리고 ' + wk + ' 줄 <b>C열</b>에 붙여넣기', '키즈 = 입고상세내역 중 쿠팡 ITEM MAP 카테가 ‘키즈’인 SKU · 배송비 = 통합 개당 배송비 × 키즈 판매량 · 광고비는 ② 키즈 광고비', '⚠ 이 줄은 R계정 입고 파일까지 넣은 뒤 지난 기록과 한 번 맞춰 보세요 (기준 확인 중)'],
+      body: K ? kv([['C 매출(납품)', fmt(K.C)], ['D 판매량', fmt(K.D)], ['E 원가총액', fmt(K.E)], ['F 배송비', fmt(K.F)], ['G 광고비', fmt(K.G)], ['이익율', pct(K.J)]]) : '', btns: [['C~G 복사', 'kCG', !K]] });
+    COPY.kcCG = KC ? [Math.round(KC.C), KC.D, Math.round(KC.E), Math.round(KC.F), Math.round(KC.G)].join('\t') : ''; COPY.kcK = KC ? String(Math.round(KC.K)) : '';
+    KS.push({ no: 'K8', title: 'Deliver_REPORT · CPC 인입SKU 이익 키즈', off: !KC, tgt: ['키즈 Deliver_REPORT', 'CPC 인입SKU 이익 표', wk + ' 줄 C열'],
+      how: ['광고보고서 상품명에 <b>키즈 · 아동 · 여아</b>가 들어간 줄만 계산', wk + ' 줄 <b>C열</b>에 C~G, <b>K열</b>에 판매액', '배송비 = 통합 개당 배송비 × 판매량'],
+      body: KC ? kv([['C 매출', fmt(KC.C)], ['D 판매량', fmt(KC.D)], ['E 원가총액', fmt(KC.E)], ['F 배송비', fmt(KC.F)], ['G 광고비', fmt(KC.G)], ['K 판매액', fmt(KC.K)], ['ROAS', pct(KC.L)]]) : '', btns: [['C~G 복사', 'kcCG', !KC], ['K 판매액', 'kcK', !KC]] });
+    $('#cpKids').innerHTML = '<p class="hint">키즈 엑셀도 RAW 시트는 같은 자료를 넣습니다. 열 위치만 다릅니다(발주서 U열, 수불내역 M열). 데이터 넣고 새로고침 필수 · 이미지는 다 삭제.</p>' + KS.map(stepHtml).join('');
+    // 구글시트
+    const M = R.M, rn = num($('#cpRow').value), G = [];
+    COPY.gRow = M && rn ? ['쿠팡', R.period, Math.round(M.C), M.D, '', '', Math.round(M.G), '', M.I, M.J, '', '', '', M.N, '', '=C' + rn + '-G' + rn + '-E' + rn + '-J' + rn + '-I' + rn + '-N' + rn + '-O' + rn + '-K' + rn + '-L' + rn + '-M' + rn, '=IFERROR(P' + rn + '/D' + rn + ',0)', '=IFERROR(P' + rn + '/C' + rn + ',0)'].join('\t') : '';
+    G.push({ no: 'G1', title: '[sales] 채널별 주간 이익율 · 쿠팡 행', off: !M, tgt: ['주간CM 탭', '판매기간 ' + (R.period || '') + ' · ‘쿠팡’ 행'],
+      how: ['② 이익율 행에 번호를 넣으면 A~R열을 기존 행과 같은 모양(P~R 수식)으로 한 줄 복사', '또는 칸마다 값 넣기: C 매출 · D 판매량 · G 원가총액 · I 배송비 · J 광고비(CPC REPORT DAY 광고비) · N 부가세'],
+      body: M ? kv([['C 매출', fmt(M.C)], ['D 판매량', fmt(M.D)], ['G 원가총액', fmt(M.G)], ['I 배송비', fmt(M.I)], ['J 광고비', fmt(M.J)], ['N 부가세', fmt(M.N)], ['공헌이익', fmt(M.P)], ['개당', fmt(M.Q)], ['이익율', pct(M.R)]]) : '<p class="hint">입고상세내역 + ② CPC REPORT 광고비가 있어야 계산됩니다.</p>',
+      btns: [['A~R 한 줄 복사', 'gRow', !(M && rn)]] });
+    COPY.gLN = M ? [Math.round(M.Q), M.R, M.D].join('\t') : ''; COPY.gQR = M && C ? [M.J, C.L].join('\t') : '';
+    G.push({ no: 'G2', title: '[SALES] 주간 KPI · 쿠팡로켓배송 (입고기준)', off: !M, tgt: ['주간 KPI 탭', '22행 쿠팡로켓배송 (입고기준)'],
+      how: ['<b>L22</b>에 Margin/Q · 이익율 · 판매수량 (L~N)', '<b>Q22</b>에 광고비 · 직접 ROAS (Q~R) · ROAS = CPC 인입SKU 판매액 ÷ 광고비'],
+      body: M ? kv([['L Margin/Q', fmt(M.Q)], ['M 이익율', pct(M.R)], ['N 판매수량', fmt(M.D)], ['Q 광고비', fmt(M.J)], ['R 직접 ROAS', C ? pct(C.L) : '광고보고서 필요']]) : '',
+      btns: [['L~N 복사', 'gLN', !M], ['Q~R 복사', 'gQR', !(M && C)]] });
+    $('#cpGs').innerHTML = G.map(stepHtml).join('');
+    // 경고
+    const msgs = [...LOG, ...DUP.map(m => ['err', m]), ...R.warn];
+    $('#cplog').innerHTML = msgs.map(([c, m]) => '<div class="' + c + '">' + esc(m) + '</div>').join('');
+  }
+  let LOG = [], DUP = [];
+  window.cpCompute = () => { render(); return RES; }; window.processCp = processCp;
+
+  // ---------- 이벤트 ----------
+  async function handle(files) {
+    LOG = [['ok', '읽는 중… (큰 파일은 몇 초 걸려요)']]; render(); LOG = [];
+    for (const f of files) {
+      try { LOG.push(['ok', (await processCp(await f.arrayBuffer(), f.name)) + ': ' + f.name]); }
+      catch (e) { LOG.push(['err', f.name + ': ' + (e && e.message ? e.message : '파일을 읽지 못했습니다.')]); }
+    }
+    render();
+  }
+  $('#cppick').addEventListener('click', () => $('#cpfile').click());
+  $('#cpfile').addEventListener('change', e => { handle([...e.target.files]); e.target.value = ''; });
+  const dz = $('#cp-files');
+  ['dragenter', 'dragover'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.remove('over'); }));
+  document.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); if (!$('#pane-weekly').hidden && !$('#wk-cp').hidden) handle([...e.dataTransfer.files]); });
+  $('#cpReset').addEventListener('click', () => { F.in = []; F.po = []; F.ana = []; F.ad = null; F.stk = null; LOG = []; DUP = []; render(); });
+  $('#cpRefClear').addEventListener('click', async () => { REF.im = REF.vi = REF.inv = null; for (const k of ['cpim', 'cpvi', 'cpinv']) await dbDel(k); render(); });
+  ['#cpPromo', '#cpReview', '#cpKidsAd'].forEach(id => $(id).addEventListener('input', e => { const raw = e.target.value.replace(/[^0-9]/g, ''); e.target.value = raw ? (+raw).toLocaleString('ko-KR') : ''; render(); }));
+  ['#cpGmv', '#cpAdDay', '#cpShip'].forEach(id => $(id).addEventListener('input', render));
+  $('#cpRow').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); render(); });
+  $('#wk-cp').addEventListener('click', e => { const b = e.target.closest('[data-cp]'); if (!b || b.disabled) return; const t = COPY[b.dataset.cp]; if (t == null || t === '') return; copyText(b, t, b.textContent); });
+
+  (async () => { REF.im = (await dbGet('cpim')) || null; REF.vi = (await dbGet('cpvi')) || null; REF.inv = (await dbGet('cpinv')) || null; render(); })();
 })();
 </script>
 
