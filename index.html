@@ -1664,7 +1664,7 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
     const KS = rawSteps(R, true).map(s => ({ ...s, no: 'K' + s.no }));
     COPY.kCG = K ? [Math.round(K.C), K.D, Math.round(K.E), Math.round(K.F), Math.round(K.G)].join('\t') : '';
     KS.push({ no: 'K7', title: 'Deliver_REPORT · 주간이익(CPC포함 전체) 키즈', off: !K, tgt: ['키즈 Deliver_REPORT', '주간이익 표', wk + ' 줄 C열'],
-      how: ['수식 없는 칸을 한 칸씩 끌어올리고 ' + wk + ' 줄 <b>C열</b>에 붙여넣기', '키즈 = 입고상세내역 중 쿠팡 ITEM MAP 카테가 ‘키즈’인 SKU · 배송비 = 통합 개당 배송비 × 키즈 판매량 · 광고비는 ② 키즈 광고비', '⚠ 이 줄은 R계정 입고 파일까지 넣은 뒤 지난 기록과 한 번 맞춰 보세요 (기준 확인 중)'],
+      how: ['수식 없는 칸을 한 칸씩 끌어올리고 ' + wk + ' 줄 <b>C열</b>에 붙여넣기', '키즈 = 입고상세내역 중 쿠팡 ITEM MAP 카테가 ‘키즈’인 SKU · 배송비 = 통합 개당 배송비 × 키즈 판매량 · 광고비는 ② 키즈 광고비', '⚠ 기준 확인 필요: 지난 엑셀 기록은 이번 주 입고상세내역 키즈분과 맞지 않습니다. 담당자가 쓰던 기준을 확인하기 전까지는 이 값을 참고용으로만 쓰세요.'],
       body: K ? kv([['C 매출(납품)', fmt(K.C)], ['D 판매량', fmt(K.D)], ['E 원가총액', fmt(K.E)], ['F 배송비', fmt(K.F)], ['G 광고비', fmt(K.G)], ['이익율', pct(K.J)]]) : '', btns: [['C~G 복사', 'kCG', !K]] });
     COPY.kcCG = KC ? [Math.round(KC.C), KC.D, Math.round(KC.E), Math.round(KC.F), Math.round(KC.G)].join('\t') : ''; COPY.kcK = KC ? String(Math.round(KC.K)) : '';
     KS.push({ no: 'K8', title: 'Deliver_REPORT · CPC 인입SKU 이익 키즈', off: !KC, tgt: ['키즈 Deliver_REPORT', 'CPC 인입SKU 이익 표', wk + ' 줄 C열'],
