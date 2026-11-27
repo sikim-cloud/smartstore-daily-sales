@@ -395,11 +395,11 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
         <li id="need-fw"><span class="st"></span><div><b>신상 타겟</b> <span class="fname">2026 Target&amp;Actual.xlsx</span>
           <div class="path"><span>2026 Target&amp;Actual 구글시트</span><i>›</i><span>파일</span><i>›</i><span>다운로드</span><i>›</i><span>Microsoft Excel (.xlsx)</span></div>
           <small>26FW 탭의 신상 품번 · 컬러 목록 · 신상이 추가되면 다시</small></div></li>
-        <li id="need-inv"><span class="st"></span><div><b>인벤토리</b> <span class="fname">WH-Out-Q (Weekly).csv</span>
-          <div class="path"><span>Inventory [MD master] 구글시트</span><i>›</i><span><b>WH-Out-Q (Weekly)</b> 탭 열기</span><i>›</i><span>파일</span><i>›</i><span>다운로드</span><i>›</i><span>CSV (현재 시트)</span></div>
-          <small>아이템맵에 없는 상품의 원가 · 품번 (포르테, 오브제 등) · 신상 나온 주에 다시</small></div></li>
-        <li id="need-alias"><span class="st"></span><div><b>작업품번 리스트</b> <span class="fname">작업품번 리스트_쿠팡.csv</span>
-          <div class="path"><span>쿠팡용/자사몰/3자채널 재촬영 정리 구글시트</span><i>›</i><span><b>작업품번 리스트_쿠팡</b> 탭 열기</span><i>›</i><span>파일</span><i>›</i><span>다운로드</span><i>›</i><span>CSV (현재 시트)</span></div>
+        <li id="need-inv"><span class="st"></span><div><b>인벤토리</b> <span class="fname">Inventory [MD master].xlsx 또는 WH-Out-Q (Weekly).csv</span>
+          <div class="path"><span>Inventory [MD master] 구글시트</span><i>›</i><span>파일</span><i>›</i><span>다운로드</span><i>›</i><span>Microsoft Excel (.xlsx)</span></div>
+          <small>xlsx(전체, 약 13MB · 몇 초 걸림)도 되고, WH-Out-Q (Weekly) 탭을 연 상태에서 CSV(현재 시트)로 받아도 됩니다(더 가벼움). CSV를 엑셀로 열면 한글이 깨져 보이지만 사이트에는 그대로 올리면 됩니다. · 아이템맵에 없는 상품(포르테, 오브제 등)의 원가 · 품번 · 신상 나온 주에 다시</small></div></li>
+        <li id="need-alias"><span class="st"></span><div><b>작업품번 리스트</b> <span class="fname">쿠팡용/자사몰/3자채널 재촬영 정리.xlsx 또는 작업품번 리스트_쿠팡.csv</span>
+          <div class="path"><span>쿠팡용/자사몰/3자채널 재촬영 정리 구글시트</span><i>›</i><span>파일</span><i>›</i><span>다운로드</span><i>›</i><span>Microsoft Excel (.xlsx) 또는 <b>작업품번 리스트_쿠팡</b> 탭에서 CSV (현재 시트)</span></div>
           <small>쿠팡 크롤링용으로 등록한 상품을 기존 품번으로 연결 (예: 레나토 SNSDR3h1641 → SNSDR3h186) · 작업품번 추가 시 다시</small></div></li>
       </ol>
 
@@ -536,7 +536,7 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
           <h4><span class="step">7</span>기준 파일</h4>
           <ul><li>아이템맵: [B2C] ITEM MAP 구글시트 › 파일 › 다운로드 › Microsoft Excel (스마트스토어 · 스마트스토어 N배송 시트만 읽음)</li>
               <li>신상 타겟: 2026 Target&amp;Actual 구글시트 › 파일 › 다운로드 › Microsoft Excel (26FW 탭만 읽음)</li>
-              <li>인벤토리(보조): Inventory [MD master] › <b>WH-Out-Q (Weekly)</b> 시트를 연 상태에서 파일 › 다운로드 › <b>CSV(현재 시트)</b>. 아이템맵에 없는 상품(포르테·오브제 등)을 품번 · 상품명으로 찾아 원가(₩)를 씁니다. 신상이 나온 주에 다시 올려주세요.</li>
+              <li>인벤토리(보조): Inventory [MD master] › 파일 › 다운로드 › <b>Microsoft Excel</b>, 또는 <b>WH-Out-Q (Weekly)</b> 시트를 연 상태에서 <b>CSV(현재 시트)</b>. 아이템맵에 없는 상품(포르테·오브제 등)을 품번 · 상품명으로 찾아 원가(₩)를 씁니다. 신상이 나온 주에 다시 올려주세요.</li>
               <li>작업품번 리스트(보조): 쿠팡용/자사몰/3자채널 재촬영 정리 › <b>작업품번 리스트_쿠팡</b> 시트 › 파일 › 다운로드 › <b>CSV(현재 시트)</b>. 쿠팡 크롤링용으로 등록한 상품(예: 레나토 SNSDR3h1641 → 기존 SNSDR3h186)을 기존 품번으로 바꿔 원가를 찾습니다.</li>
               <li>원가 찾는 순서: ① 같은 주 발주발송관리 파일의 <b>상품번호</b> → 아이템맵 품번 ② 아이템맵 상품명 ③ 상품명 끝 품번 → 아이템맵 · 인벤토리 ④ 인벤토리 상품명 ⑤ 작업품번 리스트(쿠팡품번 · 상품명 → 기존 품번) ⑥ 상품명 일부 일치(추정 표시)</li></ul>
         </div>
@@ -1243,11 +1243,11 @@ ol.need li.ok .st { background: var(--accent-soft); color: var(--accent); }
 
   // ---------- 파일 받기 ----------
   async function processWeekly(buf, name) {
-    const INV = 'WH-Out-Q (Weekly)';
+    const INV = 'WH-Out-Q (Weekly)', ALIAS = '작업품번 리스트_쿠팡';
     const wb = /\.csv$/i.test(name) ? { SheetNames: ['csv'], Sheets: { csv: XLSX.utils.aoa_to_sheet(await readRows(buf, name)) } }
-      : await readRows(buf, name, { all: true, pw: $('#wpw').value || '1234', sheets: [0, '스마트스토어', '스마트스토어 N배송', '26FW', INV] });
+      : await readRows(buf, name, { all: true, pw: $('#wpw').value || '1234', sheets: [0, '스마트스토어', '스마트스토어 N배송', '26FW', INV, ALIAS] });
     const today = new Date().toLocaleDateString('ko-KR');
-    const first = XLSX.utils.sheet_to_json(wb.Sheets[wb.Sheets[INV] ? INV : wb.SheetNames[0]], { header: 1, raw: false, defval: null });
+    const first = XLSX.utils.sheet_to_json(wb.Sheets[wb.Sheets[INV] ? INV : wb.Sheets[ALIAS] ? ALIAS : wb.SheetNames[0]], { header: 1, raw: false, defval: null });
     if (headerAt(first, ['ProductName', '품번']) >= 0) { ref.inv = { ...buildInventory(first), file: name, saved: today }; await dbSet('inv', ref.inv); renderRefs(); return '인벤토리 저장'; }
     if (headerAt(first, ['품번', '쿠팡품번']) >= 0) { ref.alias = { ...buildAlias(first), file: name, saved: today }; await dbSet('alias', ref.alias); renderRefs(); return '작업품번 리스트 저장'; }
     if (wb.Sheets['스마트스토어'] || wb.Sheets['스마트스토어 N배송']) { ref.im = { ...buildItemMap(wb), file: name, saved: today }; await dbSet('im', ref.im); renderRefs(); return '아이템맵 저장'; }
